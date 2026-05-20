@@ -30,12 +30,16 @@ mkdirSync(apiDir, { recursive: true });
 mkdirSync(resolve(apiDir, 'docs/security'), { recursive: true });
 mkdirSync(resolve(apiDir, 'packages/openapi/fixtures'), { recursive: true });
 
-if (existsSync(resolve(ROOT, 'SECURITY.md'))) {
-  copyFileSync(resolve(ROOT, 'SECURITY.md'), resolve(apiDir, 'SECURITY.md'));
+for (const f of ['SECURITY.md', 'SECURITY.es.md']) {
+  const src = resolve(ROOT, f);
+  if (existsSync(src)) copyFileSync(src, resolve(apiDir, f));
 }
-const vrSrc = resolve(ROOT, 'docs/security/2026-05-20-VR-001-idor-customer-card.md');
-if (existsSync(vrSrc)) {
-  copyFileSync(vrSrc, resolve(apiDir, 'docs/security/2026-05-20-VR-001-idor-customer-card.md'));
+for (const f of [
+  'docs/security/2026-05-20-VR-001-idor-customer-card.md',
+  'docs/security/2026-05-20-VR-001-idor-customer-card.es.md',
+]) {
+  const src = resolve(ROOT, f);
+  if (existsSync(src)) copyFileSync(src, resolve(apiDir, f));
 }
 const fxDir = resolve(ROOT, 'packages/openapi/fixtures');
 if (existsSync(fxDir)) {

@@ -1,10 +1,10 @@
-/**
- * Shared HTML shell. Inline CSS, no JS deps, responsive, dark/light auto.
- */
+import { t, type Lang } from './i18n.js';
+
 export interface LayoutOpts {
   title: string;
   description?: string;
   active?: 'home' | 'map' | 'docs' | 'security' | 'vr' | 'openapi' | 'health';
+  lang: Lang;
   /** Already-escaped HTML for the page body. */
   body: string;
 }
@@ -68,13 +68,24 @@ const STYLES = /* css */ `
   }
   .brand h1 { font-size: 18px; margin: 0; line-height: 1; }
   .brand .sub { font-size: 12px; color: var(--fg-muted); }
-  nav.main { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.main { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
   nav.main a {
     padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--fg-muted);
     font-size: 14px; font-weight: 500;
   }
   nav.main a:hover { background: var(--bg-elev-2); color: var(--fg); }
   nav.main a.active { color: var(--accent); background: var(--bg-elev-2); }
+  .lang-switch {
+    margin-left: 8px; padding: 4px;
+    background: var(--bg-elev-2); border-radius: 8px;
+    display: inline-flex; gap: 2px;
+  }
+  .lang-switch a {
+    padding: 4px 10px !important; font-size: 12px !important;
+    border-radius: 6px; font-weight: 600 !important;
+    color: var(--fg-muted) !important;
+  }
+  .lang-switch a.active { color: #fff !important; background: var(--accent) !important; }
 
   .hero { padding: 48px 0 32px; }
   .hero h2 { font-size: clamp(28px, 5vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; }
@@ -143,7 +154,6 @@ const STYLES = /* css */ `
   }
   footer.site a { color: var(--fg-muted); }
 
-  /* Markdown rendering */
   .prose { max-width: 820px; }
   .prose h1, .prose h2, .prose h3 { letter-spacing: -0.01em; }
   .prose h1 { font-size: 28px; margin: 24px 0 12px; }
@@ -176,44 +186,67 @@ function escapeAttr(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
+/** Append/replace `lang=` on a URL. Preserves other query params. */
+function withLang(href: string, lang: Lang): string {
+  const [path, qs = ''] = href.split('?');
+  const params = new URLSearchParams(qs);
+  if (lang === 'es') params.delete('lang');
+  else params.set('lang', lang);
+  const str = params.toString();
+  return str ? `${path}?${str}` : (path as string);
+}
+
 export function renderLayout(opts: LayoutOpts): string {
+  const lang = opts.lang;
+  const s = t(lang);
   const navItems: Array<{ id: NonNullable<LayoutOpts['active']>; href: string; label: string }> = [
-    { id: 'home', href: '/', label: 'Inicio' },
-    { id: 'map', href: '/map', label: 'Mapa' },
-    { id: 'docs', href: '/docs', label: 'API' },
-    { id: 'openapi', href: '/openapi.json', label: 'OpenAPI' },
-    { id: 'security', href: '/security', label: 'Seguridad' },
-    { id: 'vr', href: '/security/vr-001', label: 'VR-001' },
-    { id: 'health', href: '/status', label: 'Estado' },
+    { id: 'home', href: '/', label: s.nav.home },
+    { id: 'map', href: '/map', label: s.nav.map },
+    { id: 'docs', href: '/docs', label: s.nav.api },
+    { id: 'openapi', href: '/openapi.json', label: s.nav.openapi },
+    { id: 'security', href: '/security', label: s.nav.security },
+    { id: 'vr', href: '/security/vr-001', label: s.nav.vr },
+    { id: 'health', href: '/status', label: s.nav.status },
   ];
   const nav = navItems
     .map(
       (n) =>
-        `<a href="${escapeAttr(n.href)}"${opts.active === n.id ? ' class="active"' : ''}>${n.label}</a>`,
+        `<a href="${escapeAttr(withLang(n.href, lang))}"${opts.active === n.id ? ' class="active"' : ''}>${n.label}</a>`,
     )
     .join('');
+  // Lang switch — links to the same current path with lang flipped. We don't
+  // know the precise current path here, so we link to '/' (the dashboard) for
+  // the switch — works as a global toggle.
+  const currentPath = navItems.find((n) => n.id === opts.active)?.href ?? '/';
+  const langSwitch = `
+    <div class="lang-switch">
+      <a href="${escapeAttr(withLang(currentPath, 'es'))}"${lang === 'es' ? ' class="active"' : ''}>ES</a>
+      <a href="${escapeAttr(withLang(currentPath, 'en'))}"${lang === 'en' ? ' class="active"' : ''}>EN</a>
+    </div>`;
   return `<!doctype html>
-<html lang="es">
+<html lang="${lang}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeAttr(opts.title)}</title>
   ${opts.description ? `<meta name="description" content="${escapeAttr(opts.description)}" />` : ''}
   <meta name="theme-color" content="#7c3aed" />
+  <link rel="alternate" hreflang="es" href="${escapeAttr(withLang(currentPath, 'es'))}" />
+  <link rel="alternate" hreflang="en" href="${escapeAttr(withLang(currentPath, 'en'))}" />
   <style>${STYLES}</style>
 </head>
 <body>
   <header class="site">
     <div class="container">
       <div class="row">
-        <a class="brand" href="/">
+        <a class="brand" href="${escapeAttr(withLang('/', lang))}">
           <div class="brand-logo">U</div>
           <div>
-            <h1>Puente UTE Mueve</h1>
-            <div class="sub">Puente no oficial · v0.1.0</div>
+            <h1>${s.brand.name}</h1>
+            <div class="sub">${s.brand.sub}</div>
           </div>
         </a>
-        <nav class="main">${nav}</nav>
+        <nav class="main">${nav}${langSwitch}</nav>
       </div>
     </div>
   </header>
@@ -223,12 +256,12 @@ export function renderLayout(opts: LayoutOpts): string {
   <footer class="site">
     <div class="container">
       <p>
-        Este proyecto <strong>no está afiliado</strong> a UTE.
-        Código fuente y bibliotecas bajo licencia MIT —
+        ${s.footer.notAffiliated}
+        ${s.footer.license} —
         <a href="https://github.com/eduair94/ute-mueve" target="_blank" rel="noopener">GitHub</a> ·
         <a href="https://www.npmjs.com/package/@ute-mueve/sdk" target="_blank" rel="noopener">@ute-mueve/sdk</a> ·
         <a href="https://www.npmjs.com/package/@ute-mueve/types" target="_blank" rel="noopener">@ute-mueve/types</a>.
-        Reverse-engineering responsable — leé <a href="/security">SEGURIDAD</a> antes de operar.
+        ${s.footer.rePrefix} <a href="${escapeAttr(withLang('/security', lang))}">${s.nav.security}</a>.
       </p>
     </div>
   </footer>

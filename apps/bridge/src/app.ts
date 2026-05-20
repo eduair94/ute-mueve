@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import type { Container } from './container.js';
 import { errorMiddleware } from './middleware/error.js';
 import { renderDashboard } from './views/dashboard.js';
+import { pickLang } from './views/i18n.js';
 import { renderMap } from './views/map.js';
 import { renderSecurityIndex, renderVr001 } from './views/markdown.js';
 import { registerConfigurationRoutes } from './routes/configuration.js';
@@ -39,7 +40,7 @@ export function createApp(container: Container) {
     }),
   );
 
-  app.get('/', (ctx) => ctx.html(renderDashboard()));
+  app.get('/', (ctx) => ctx.html(renderDashboard(pickLang(ctx.req.url))));
   app.get('/api', (ctx) =>
     ctx.json({
       name: 'ute-mueve-bridge',
@@ -53,9 +54,9 @@ export function createApp(container: Container) {
       unaffiliated_with_ute: true,
     }),
   );
-  app.get('/map', (ctx) => ctx.html(renderMap()));
-  app.get('/security', (ctx) => ctx.html(renderSecurityIndex()));
-  app.get('/security/vr-001', (ctx) => ctx.html(renderVr001()));
+  app.get('/map', (ctx) => ctx.html(renderMap(pickLang(ctx.req.url))));
+  app.get('/security', (ctx) => ctx.html(renderSecurityIndex(pickLang(ctx.req.url))));
+  app.get('/security/vr-001', (ctx) => ctx.html(renderVr001(pickLang(ctx.req.url))));
 
   app.get('/health', (ctx) => ctx.json({ ok: true }));
 

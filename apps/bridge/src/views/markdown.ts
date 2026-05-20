@@ -2,19 +2,15 @@ import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
+import type { Lang } from './i18n.js';
 import { renderLayout } from './layout.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-/**
- * Markdown source files may live in one of two places:
- * - Dev / `tsx`: at the repo root (resolved via `../../../..` from this file).
- * - Vercel bundled function: alongside the bundle (copied by `scripts/bundle-vercel-fn.mjs`).
- */
 const SEARCH_ROOTS = [
   resolve(HERE, '../../../..'), // dev: monorepo root
-  HERE, // bundled: same dir as api/index.js (which is api/)
-  resolve(HERE, '..'), // bundled fallback: parent of api/
+  HERE, // bundled: same dir as api/index.js
+  resolve(HERE, '..'),
 ];
 
 function readMd(relative: string): string {
@@ -28,7 +24,19 @@ function readMd(relative: string): string {
       }
     }
   }
-  return `# ${relative}\n\n_(Archivo no incluido en este deployment. Buscá la versión en el repositorio.)_`;
+  return '';
+}
+
+/** Pick the `.es.md` variant when lang=es, fall back to original. */
+function pickMarkdown(basePath: string, lang: Lang): string {
+  if (lang === 'es') {
+    const es = basePath.replace(/\.md$/, '.es.md');
+    const content = readMd(es);
+    if (content) return content;
+  }
+  const fallback = readMd(basePath);
+  if (fallback) return fallback;
+  return `# ${basePath}\n\n_(File not bundled in this deployment.)_`;
 }
 
 marked.setOptions({ gfm: true, breaks: false });
@@ -37,10 +45,11 @@ export interface MarkdownPageOpts {
   title: string;
   active: 'security' | 'vr';
   source: string;
+  lang: Lang;
 }
 
 export function renderMarkdownPage(opts: MarkdownPageOpts): string {
-  const md = readMd(opts.source);
+  const md = pickMarkdown(opts.source, opts.lang);
   const html = marked.parse(md) as string;
   const body = `
     <section style="padding-top: 32px;">
@@ -51,24 +60,27 @@ export function renderMarkdownPage(opts: MarkdownPageOpts): string {
   `;
   return renderLayout({
     title: `${opts.title} — UTE Mueve Bridge`,
-    description: `${opts.title}. Análisis del puente UTE Mueve.`,
+    description: `${opts.title}.`,
     active: opts.active,
+    lang: opts.lang,
     body,
   });
 }
 
-export function renderSecurityIndex(): string {
+export function renderSecurityIndex(lang: Lang): string {
   return renderMarkdownPage({
-    title: 'Reporte de Seguridad',
+    title: lang === 'es' ? 'Reporte de Seguridad' : 'Security Report',
     active: 'security',
     source: 'SECURITY.md',
+    lang,
   });
 }
 
-export function renderVr001(): string {
+export function renderVr001(lang: Lang): string {
   return renderMarkdownPage({
-    title: 'VR-001 — IDOR de Customer Card',
+    title: lang === 'es' ? 'VR-001 — IDOR de Customer Card' : 'VR-001 — Customer Card IDOR',
     active: 'vr',
     source: 'docs/security/2026-05-20-VR-001-idor-customer-card.md',
+    lang,
   });
 }

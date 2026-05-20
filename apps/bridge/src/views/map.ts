@@ -1,3 +1,4 @@
+import { t, type Lang } from './i18n.js';
 import { renderLayout } from './layout.js';
 
 /**
@@ -265,32 +266,33 @@ function renderFilterGroups(): string {
   ).join('');
 }
 
-export function renderMap(): string {
+export function renderMap(lang: Lang): string {
+  const s = t(lang);
+  const langSnippet = lang === 'es' ? '/* es */' : '/* en */';
+  void langSnippet;
   const body = `
     <section style="padding-top: 24px;">
-      <h2 style="margin: 0 0 8px;">Mapa de estaciones</h2>
-      <p style="color: var(--fg-muted); margin: 0 0 16px;">
-        Vista previa con <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a> + Leaflet. Los datos vienen de <code>POST /stations/search</code> en vivo. Modificá los filtros y el mapa se actualiza solo.
-      </p>
+      <h2 style="margin: 0 0 8px;">${s.map.title}</h2>
+      <p style="color: var(--fg-muted); margin: 0 0 16px;">${s.map.intro}</p>
     </section>
 
     <section>
       <div class="map-shell">
         <aside class="map-sidebar">
           <div class="map-actions">
-            <button id="btn-load">Aplicar filtros</button>
-            <button id="btn-locate" class="ghost">Ubicarme</button>
-            <button id="btn-reset" class="ghost">Reset</button>
+            <button id="btn-load">${s.map.apply}</button>
+            <button id="btn-locate" class="ghost">${s.map.locate}</button>
+            <button id="btn-reset" class="ghost">${s.map.reset}</button>
           </div>
-          <div id="summary" class="map-summary">Inicializando…</div>
+          <div id="summary" class="map-summary">${s.map.loading}</div>
           <form id="filters" onsubmit="event.preventDefault();">
             ${renderFilterGroups()}
           </form>
           <div class="map-legend">
-            <span><span class="dot" style="background:#10b981"></span>Disponible</span>
-            <span><span class="dot" style="background:#3b82f6"></span>Cargando</span>
-            <span><span class="dot" style="background:#94a3b8"></span>Sin com.</span>
-            <span><span class="dot" style="background:#ef4444"></span>No disp.</span>
+            <span><span class="dot" style="background:#10b981"></span>${s.map.legendAvailable}</span>
+            <span><span class="dot" style="background:#3b82f6"></span>${s.map.legendCharging}</span>
+            <span><span class="dot" style="background:#94a3b8"></span>${s.map.legendNoComm}</span>
+            <span><span class="dot" style="background:#ef4444"></span>${s.map.legendUnavailable}</span>
           </div>
         </aside>
         <div class="map-container">
@@ -300,10 +302,8 @@ export function renderMap(): string {
     </section>
 
     <section>
-      <h2 style="margin: 0 0 8px;">Copiá el código</h2>
-      <p style="color: var(--fg-muted); margin: 0 0 16px;">
-        Snippet generado en vivo con los filtros que tenés seleccionados arriba. Elegí el lenguaje y copialo.
-      </p>
+      <h2 style="margin: 0 0 8px;">${s.map.snippetTitle}</h2>
+      <p style="color: var(--fg-muted); margin: 0 0 16px;">${s.map.snippetIntro}</p>
       <div class="snippet-shell">
         <div class="snippet-tabs">
           <input type="radio" name="lang" value="ts" id="lang-ts" checked />
@@ -320,33 +320,33 @@ export function renderMap(): string {
           <label for="lang-python">Python (httpx)</label>
         </div>
         <div class="snippet-body">
-          <button class="snippet-copy" id="btn-copy">Copiar</button>
+          <button class="snippet-copy" id="btn-copy">${lang === 'es' ? 'Copiar' : 'Copy'}</button>
           <pre><code id="snippet-code">…</code></pre>
         </div>
         <div class="snippet-footer">
-          <span>📦 <a href="https://www.npmjs.com/package/@ute-mueve/sdk" target="_blank" rel="noopener">@ute-mueve/sdk en npm</a></span>
-          <span>⌥ <a href="https://github.com/eduair94/ute-mueve" target="_blank" rel="noopener">Repositorio en GitHub</a></span>
-          <span>📚 <a href="/docs">Referencia completa de la API</a></span>
+          <span>📦 <a href="https://www.npmjs.com/package/@ute-mueve/sdk" target="_blank" rel="noopener">${s.map.npmLink}</a></span>
+          <span>⌥ <a href="https://github.com/eduair94/ute-mueve" target="_blank" rel="noopener">${s.map.githubLink}</a></span>
+          <span>📚 <a href="/docs${lang === 'en' ? '?lang=en' : ''}">${s.map.apiRefLink}</a></span>
         </div>
       </div>
     </section>
   `;
 
-  // Inject Leaflet CSS/JS via CDN, plus our own additional styles.
   const head = `
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
     <style>${STYLES}</style>
   `;
 
-  const tailScript = `<script>window.addEventListener('load', () => { ${SCRIPT} });</script>`;
+  const tailScript = `<script>window.addEventListener('load', () => { ${SCRIPT.replace("'Cargando…'", lang === 'es' ? "'Cargando…'" : "'Loading…'").replace("'Aplicar filtros'", lang === 'es' ? "'Aplicar filtros'" : "'Apply filters'").replace("'Copiado!'", lang === 'es' ? "'Copiado!'" : "'Copied!'").replace("'Copiar'", lang === 'es' ? "'Copiar'" : "'Copy'").replace("'Consultando bridge…'", lang === 'es' ? "'Consultando bridge…'" : "'Querying bridge…'").replace(/estaciones · /g, lang === 'es' ? 'estaciones · ' : 'stations · ').replace(/filtros: /g, lang === 'es' ? 'filtros: ' : 'filters: ').replace(/'Tu ubicación'/g, lang === 'es' ? "'Tu ubicación'" : "'Your location'").replace(/'Geolocalización no disponible'/g, lang === 'es' ? "'Geolocalización no disponible'" : "'Geolocation unavailable'")} });</script>`;
 
-  // We piggyback on renderLayout but need to inject map-specific head + script.
-  // Quick approach: render layout then string-replace.
   const html = renderLayout({
-    title: 'Mapa de estaciones — Puente UTE Mueve',
-    description: 'Mapa interactivo de estaciones de carga UTE con filtros en vivo.',
-    active: 'home',
+    title: lang === 'es' ? 'Mapa de estaciones — Puente UTE Mueve' : 'Stations map — UTE Mueve Bridge',
+    description: lang === 'es'
+      ? 'Mapa interactivo de estaciones de carga UTE con filtros en vivo.'
+      : 'Interactive map of UTE charging stations with live filters.',
+    active: 'map',
+    lang,
     body,
   });
   return html
