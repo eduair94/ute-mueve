@@ -1,0 +1,40 @@
+{
+  "name": "@ute-mueve/sdk",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Isomorphic TypeScript SDK for the UTE Mueve bridge API (unofficial).",
+  "license": "MIT",
+  "author": " <admin@checkleaked.cc>",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@ute-mueve/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": { "optional": true }
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "5.6.3",
+    "vitest": "^2.1.4",
+    "zod": "^3.23.8"
+  }
+}

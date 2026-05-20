@@ -38,9 +38,9 @@ describe('UpstreamClient', () => {
     const client = makeClient(fetchMock as unknown as typeof fetch);
     const res = await client.get('/test');
     expect(res).toEqual({ ok: true });
-    const call = fetchMock.mock.calls[0];
+    const call = fetchMock.mock.calls[0] as unknown as [string, RequestInit] | undefined;
     if (!call) throw new Error('no call');
-    const init = call[1] as RequestInit;
+    const init = call[1];
     const headers = new Headers(init.headers);
     expect(headers.get('authorization')).toBe(`Bearer ${validJwt}`);
     expect(headers.get('uniquekeyuser')).toBe('abc');

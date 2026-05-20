@@ -1,0 +1,1959 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "UTE Mueve Bridge",
+    "version": "0.1.0",
+    "description": "Unofficial bridge to movilidadelectrica.ute.com.uy/api/v2. See SECURITY.md and docs/security/2026-05-20-VR-001-idor-customer-card.md.",
+    "contact": {
+      "name": "",
+      "email": "admin@checkleaked.cc"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "components": {
+    "schemas": {},
+    "parameters": {}
+  },
+  "paths": {
+    "/configuration/appversion": {
+      "get": {
+        "tags": [
+          "Configuration"
+        ],
+        "summary": "Minimum supported app version",
+        "responses": {
+          "200": {
+            "description": "App version metadata (envelope-wrapped)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "customersAppMinVersionSupportedAndroid": {
+                          "type": "string"
+                        },
+                        "customersAppMinVersionSupportediOS": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": {
+                    "customersAppMinVersionSupportedAndroid": "1.0.0",
+                    "customersAppMinVersionSupportediOS": "1.0.0",
+                    "emailServerBlackList": [],
+                    "environment": "Production"
+                  },
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/station/statusFiltered": {
+      "post": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "Charging stations filtered by connector criteria",
+        "description": "Returns stations matching the supplied connector filters. Pass arrays of UTE filter options with `selected: true` for the categories you want to include.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "connectorTypes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "internalCode": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "internalCode",
+                        "text",
+                        "selected",
+                        "icon"
+                      ]
+                    }
+                  },
+                  "connectorStatuses": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "internalCode": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "internalCode",
+                        "text",
+                        "selected",
+                        "icon"
+                      ]
+                    }
+                  },
+                  "connectorPaymentTypes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "internalCode": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "internalCode",
+                        "text",
+                        "selected",
+                        "icon"
+                      ]
+                    }
+                  },
+                  "connectorPowers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "internalCode": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "internalCode",
+                        "text",
+                        "selected",
+                        "icon"
+                      ]
+                    }
+                  },
+                  "connectorCables": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "internalCode": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "internalCode",
+                        "text",
+                        "selected",
+                        "icon"
+                      ]
+                    }
+                  },
+                  "connectorNetworks": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "internalCode": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "selected": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "internalCode",
+                        "text",
+                        "selected",
+                        "icon"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "connectorTypes",
+                  "connectorStatuses",
+                  "connectorPaymentTypes",
+                  "connectorPowers",
+                  "connectorCables",
+                  "connectorNetworks"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped array of stations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "statusDetails": {
+                            "type": "string"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "lng": {
+                            "type": "number"
+                          },
+                          "chargeNetworkName": {
+                            "type": "string"
+                          },
+                          "countryCode": {
+                            "type": "string"
+                          },
+                          "operatorLogoUrl": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "cardUseTypeDiscount": {},
+                          "latitude": {
+                            "type": "number"
+                          },
+                          "longitude": {
+                            "type": "number"
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "connectors": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "type": "string"
+                                },
+                                "power": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "network": {
+                                  "type": "string"
+                                },
+                                "hasCable": {
+                                  "type": "boolean"
+                                },
+                                "paymentTypes": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "id"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": 3,
+                      "name": "Palacio de la Luz - Aguilar",
+                      "source": "CargaME",
+                      "status": 0,
+                      "statusDetails": "Available",
+                      "lat": -34.885144,
+                      "lng": -56.195179,
+                      "chargeNetworkName": "PUBLIC",
+                      "countryCode": "UY",
+                      "operatorLogoUrl": null,
+                      "cardUseTypeDiscount": null
+                    },
+                    {
+                      "id": 7,
+                      "name": "ANCAP Colonia del Sacramento",
+                      "source": "CargaME",
+                      "status": 0,
+                      "statusDetails": "Available",
+                      "lat": -34.471664,
+                      "lng": -57.841764,
+                      "chargeNetworkName": "PUBLIC",
+                      "countryCode": "UY",
+                      "operatorLogoUrl": null,
+                      "cardUseTypeDiscount": null
+                    },
+                    {
+                      "id": 8,
+                      "name": "Estación Península",
+                      "source": "CargaME",
+                      "status": 0,
+                      "statusDetails": "Available",
+                      "lat": -34.967524,
+                      "lng": -54.951832,
+                      "chargeNetworkName": "PUBLIC",
+                      "countryCode": "UY",
+                      "operatorLogoUrl": null,
+                      "cardUseTypeDiscount": null
+                    },
+                    {
+                      "id": 11,
+                      "name": "ANCAP Chuy",
+                      "source": "CargaME",
+                      "status": 0,
+                      "statusDetails": "Available",
+                      "lat": -33.694694,
+                      "lng": -53.455267,
+                      "chargeNetworkName": "PUBLIC",
+                      "countryCode": "UY",
+                      "operatorLogoUrl": null,
+                      "cardUseTypeDiscount": null
+                    },
+                    {
+                      "id": 15,
+                      "name": "Electrolinera Leguizamón",
+                      "source": "CargaME",
+                      "status": 0,
+                      "statusDetails": "Available",
+                      "lat": -34.896317,
+                      "lng": -56.140618,
+                      "chargeNetworkName": "PUBLIC",
+                      "countryCode": "UY",
+                      "operatorLogoUrl": null,
+                      "cardUseTypeDiscount": null
+                    }
+                  ],
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/station/renewEnergy": {
+      "post": {
+        "tags": [
+          "Stations"
+        ],
+        "summary": "Renewable-energy aggregates for a date range",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "CardNumber": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": []
+                  },
+                  "StartDate": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}([ T]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?$"
+                  },
+                  "EndDate": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}([ T]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?)?$"
+                  }
+                },
+                "required": [
+                  "StartDate",
+                  "EndDate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aggregate renewable-energy data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "totalEnergy": {
+                          "type": "number"
+                        },
+                        "renewablePercentage": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": null,
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/card/{userId}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Customer credit-card metadata",
+        "description": "Returns the customer's MercadoPago-linked credit-card metadata. See SECURITY.md F-05 — UTE backend exposes this for any CI without per-user auth.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 7,
+              "maxLength": 32,
+              "pattern": "^[A-Za-z0-9]+$",
+              "description": "Customer key. Accepts both a Uruguayan CI (7-9 digits) and a Firebase Auth UID (20-32 alphanumeric chars). See SECURITY.md F-05.",
+              "example": "EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx"
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped customer card list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "cardId": {
+                            "type": "string"
+                          },
+                          "firstSixDigits": {
+                            "type": "string"
+                          },
+                          "lastFourDigits": {
+                            "type": "string"
+                          },
+                          "expirationMonth": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "expirationYear": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "identifType": {
+                            "type": "string"
+                          },
+                          "identifNumber": {
+                            "type": "string"
+                          },
+                          "paymentMethodId": {
+                            "type": "string"
+                          },
+                          "firstName": {
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "statusDate": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "cvvMandatory": {
+                            "type": "boolean"
+                          },
+                          "payerCardId": {
+                            "type": "string"
+                          },
+                          "issuerId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "minPay": {
+                            "type": "number"
+                          },
+                          "cardUseType": {
+                            "type": "number"
+                          },
+                          "cardUseTypeDesc": {
+                            "type": "string"
+                          },
+                          "alias": {
+                            "type": "string"
+                          },
+                          "cardNumber": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "REDACTED_INTERNAL_ID",
+                      "cardId": "**XXXXXXXXXXXXX",
+                      "firstSixDigits": "REDACTED_BIN",
+                      "lastFourDigits": "REDACTED_L4",
+                      "expirationMonth": "REDACTED",
+                      "expirationYear": "REDACTED",
+                      "identifType": "CI",
+                      "identifNumber": "REDACTED_CI",
+                      "paymentMethodId": "REDACTED_BRAND",
+                      "firstName": "REDACTED_NAME",
+                      "lastName": "REDACTED_NAME",
+                      "status": "Habilitada",
+                      "statusDate": "REDACTED_ISO_DATETIME",
+                      "cvvMandatory": true,
+                      "payerCardId": "REDACTED_MP_ID",
+                      "issuerId": "REDACTED",
+                      "minPay": 15,
+                      "cardUseType": 1,
+                      "cardUseTypeDesc": "Particular"
+                    }
+                  ],
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/card/register": {
+      "post": {
+        "tags": [
+          "Customer",
+          "Writes"
+        ],
+        "summary": "Register a new payment card (gated)",
+        "description": "Requires `ENABLE_WRITE_ENDPOINTS=true`. Modifies a real UTE Mueve customer account.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "cardNumber": {
+                    "type": "string",
+                    "minLength": 4
+                  },
+                  "alias": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "userId",
+                  "cardNumber"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "cardId": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Writes disabled"
+          }
+        }
+      }
+    },
+    "/customer/card/unregister": {
+      "post": {
+        "tags": [
+          "Customer",
+          "Writes"
+        ],
+        "summary": "Unregister a payment card (gated)",
+        "description": "Requires `ENABLE_WRITE_ENDPOINTS=true`.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "cardNumber": {
+                    "type": "string",
+                    "minLength": 4
+                  },
+                  "alias": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "cardId": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Writes disabled"
+          }
+        }
+      }
+    },
+    "/card/{userId}": {
+      "get": {
+        "tags": [
+          "Cards"
+        ],
+        "summary": "List of UTE-issued cards for the customer",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 7,
+              "maxLength": 32,
+              "pattern": "^[A-Za-z0-9]+$",
+              "description": "Customer key (CI or Firebase UID).",
+              "example": "EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx"
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped card list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "cardId": {
+                            "type": "string"
+                          },
+                          "firstSixDigits": {
+                            "type": "string"
+                          },
+                          "lastFourDigits": {
+                            "type": "string"
+                          },
+                          "expirationMonth": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "expirationYear": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "identifType": {
+                            "type": "string"
+                          },
+                          "identifNumber": {
+                            "type": "string"
+                          },
+                          "paymentMethodId": {
+                            "type": "string"
+                          },
+                          "firstName": {
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "statusDate": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "cvvMandatory": {
+                            "type": "boolean"
+                          },
+                          "payerCardId": {
+                            "type": "string"
+                          },
+                          "issuerId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "minPay": {
+                            "type": "number"
+                          },
+                          "cardUseType": {
+                            "type": "number"
+                          },
+                          "cardUseTypeDesc": {
+                            "type": "string"
+                          },
+                          "alias": {
+                            "type": "string"
+                          },
+                          "cardNumber": {
+                            "type": "string"
+                          },
+                          "balance": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": [],
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/network/{userId}": {
+      "get": {
+        "tags": [
+          "Networks"
+        ],
+        "summary": "Networks enabled for the customer",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 7,
+              "maxLength": 32,
+              "pattern": "^[A-Za-z0-9]+$",
+              "description": "Customer key (CI or Firebase UID).",
+              "example": "EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx"
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped network list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "networkId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "networkDesc": {
+                            "type": "string"
+                          },
+                          "internalCode": {
+                            "type": "string"
+                          },
+                          "enabled": {
+                            "type": "boolean"
+                          },
+                          "source": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": 0,
+                      "networkDesc": "Pública",
+                      "networkId": "PUBLIC",
+                      "source": "CargaME"
+                    },
+                    {
+                      "id": 0,
+                      "networkDesc": "Taxi",
+                      "networkId": "TAXI",
+                      "source": "CargaME"
+                    },
+                    {
+                      "id": 1,
+                      "networkDesc": "DMC",
+                      "networkId": "DMC",
+                      "source": "EMSP"
+                    },
+                    {
+                      "id": 2,
+                      "networkDesc": "eOne",
+                      "networkId": "ONE",
+                      "source": "EMSP"
+                    }
+                  ],
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remotecharge/user/{userId}": {
+      "get": {
+        "tags": [
+          "Remote Charge"
+        ],
+        "summary": "Remote-charge session history",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 7,
+              "maxLength": 32,
+              "pattern": "^[A-Za-z0-9]+$",
+              "description": "Customer key (CI or Firebase UID).",
+              "example": "EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx"
+            },
+            "required": true,
+            "name": "userId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped session history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "transactionId": {
+                            "type": "string"
+                          },
+                          "stationId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "connectorId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "startTime": {
+                            "type": "string"
+                          },
+                          "endTime": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "energyKwh": {
+                            "type": "number"
+                          },
+                          "cost": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": null,
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remotecharge/transaction/{transactionId}": {
+      "get": {
+        "tags": [
+          "Remote Charge"
+        ],
+        "summary": "Detail of a specific charge transaction",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "example": "EXAMPLE_TX"
+            },
+            "required": true,
+            "name": "transactionId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped transaction detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "energyKwh": {
+                          "type": "number"
+                        },
+                        "durationSeconds": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remotecharge/connector/status": {
+      "post": {
+        "tags": [
+          "Remote Charge"
+        ],
+        "summary": "Live status of a station connector",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "stationId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "connectorId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "stationId",
+                  "connectorId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connector status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "energyKwh": {
+                          "type": "number"
+                        },
+                        "durationSeconds": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remotecharge/start": {
+      "post": {
+        "tags": [
+          "Remote Charge",
+          "Writes"
+        ],
+        "summary": "Start a remote charging session (gated)",
+        "description": "Requires `ENABLE_WRITE_ENDPOINTS=true`. Starts a real charging session.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "stationId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "connectorId": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "cardId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userId",
+                  "stationId",
+                  "connectorId",
+                  "cardId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "transactionId": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Writes disabled"
+          }
+        }
+      }
+    },
+    "/remotecharge/stop": {
+      "post": {
+        "tags": [
+          "Remote Charge",
+          "Writes"
+        ],
+        "summary": "Stop a remote charging session (gated)",
+        "description": "Requires `ENABLE_WRITE_ENDPOINTS=true`. Stops an active charging session.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "string"
+                  },
+                  "transactionId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userId",
+                  "transactionId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "transactionId": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Writes disabled"
+          }
+        }
+      }
+    },
+    "/card/accounts": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Lookup customer accounts by identifier",
+        "description": "Returns accounts and masked cardIds for the given identifier. With `docType:\"CI\"` and a Uruguayan cédula, this endpoint resolves a customer record without per-user auth. See SECURITY.md F-05 / VR-001.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "docType": {
+                    "type": "string",
+                    "default": "CI"
+                  },
+                  "docNumber": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "onlyUte": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "docNumber"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Envelope-wrapped account list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "accountId": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          "uso": {
+                            "type": "string"
+                          },
+                          "cardData": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "cardId": {
+                                  "type": "string"
+                                },
+                                "alias": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "uso": {
+                                  "type": "string"
+                                },
+                                "estado": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                }
+                              }
+                            }
+                          },
+                          "docType": {
+                            "type": "string"
+                          },
+                          "docNumber": {
+                            "type": "string"
+                          },
+                          "customerName": {
+                            "type": "string"
+                          },
+                          "customerKey": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                },
+                "example": {
+                  "data": [],
+                  "messages": [],
+                  "success": true,
+                  "errors": [],
+                  "result": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification/register": {
+      "post": {
+        "tags": [
+          "Notifications",
+          "Writes"
+        ],
+        "summary": "Register an FCM token for push notifications (gated)",
+        "description": "Requires `ENABLE_WRITE_ENDPOINTS=true`. Associates a Firebase Cloud Messaging token with a device key (`UniqueKeyUser`).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UniqueKeyUser": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "TokenId": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "UniqueKeyUser",
+                  "TokenId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {},
+                    "messages": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {},
+                      "default": []
+                    },
+                    "result": {
+                      "type": "number",
+                      "default": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Writes disabled"
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {}
+}

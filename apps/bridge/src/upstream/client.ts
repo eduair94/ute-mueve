@@ -36,7 +36,7 @@ export class UpstreamClient {
     let attempt = 0;
     while (attempt < 2) {
       const token = await this.tokenManager.getToken();
-      const res = await this.doFetch(`${this.baseUrl}${path}`, {
+      const init: RequestInit = {
         method,
         headers: {
           authorization: `Bearer ${token}`,
@@ -47,8 +47,9 @@ export class UpstreamClient {
             ? { 'content-type': 'application/json; charset=utf-8' }
             : { 'content-type': 'application/json;' }),
         },
-        body: body !== undefined ? JSON.stringify(body) : undefined,
-      });
+      };
+      if (body !== undefined) init.body = JSON.stringify(body);
+      const res = await this.doFetch(`${this.baseUrl}${path}`, init);
       if (res.status === 401) {
         await this.tokenManager.invalidate();
         attempt += 1;

@@ -17,9 +17,9 @@ describe('fetchUteToken', () => {
       fetch: fetchMock as unknown as typeof fetch,
     });
     expect(out.access_token).toBe('abc');
-    const call = fetchMock.mock.calls[0];
+    const call = fetchMock.mock.calls[0] as unknown as [string, RequestInit] | undefined;
     if (!call) throw new Error('no call');
-    const [url, init] = call as [string, RequestInit];
+    const [url, init] = call;
     expect(url).toBe('https://x.test/api/v2/token');
     expect(init.method).toBe('POST');
     expect(JSON.parse(init.body as string)).toEqual({
