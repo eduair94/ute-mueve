@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import type { Container } from './container.js';
 import { errorMiddleware } from './middleware/error.js';
 import { renderDashboard } from './views/dashboard.js';
+import { renderMap } from './views/map.js';
 import { renderSecurityIndex, renderVr001 } from './views/markdown.js';
 import { registerConfigurationRoutes } from './routes/configuration.js';
 import { registerStationRoutes } from './routes/stations.js';
@@ -52,6 +53,7 @@ export function createApp(container: Container) {
       unaffiliated_with_ute: true,
     }),
   );
+  app.get('/map', (ctx) => ctx.html(renderMap()));
   app.get('/security', (ctx) => ctx.html(renderSecurityIndex()));
   app.get('/security/vr-001', (ctx) => ctx.html(renderVr001()));
 

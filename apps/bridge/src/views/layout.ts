@@ -4,7 +4,7 @@
 export interface LayoutOpts {
   title: string;
   description?: string;
-  active?: 'home' | 'docs' | 'security' | 'vr' | 'openapi' | 'health';
+  active?: 'home' | 'map' | 'docs' | 'security' | 'vr' | 'openapi' | 'health';
   /** Already-escaped HTML for the page body. */
   body: string;
 }
@@ -179,6 +179,7 @@ function escapeAttr(s: string): string {
 export function renderLayout(opts: LayoutOpts): string {
   const navItems: Array<{ id: NonNullable<LayoutOpts['active']>; href: string; label: string }> = [
     { id: 'home', href: '/', label: 'Inicio' },
+    { id: 'map', href: '/map', label: 'Mapa' },
     { id: 'docs', href: '/docs', label: 'API' },
     { id: 'openapi', href: '/openapi.json', label: 'OpenAPI' },
     { id: 'security', href: '/security', label: 'Seguridad' },
@@ -223,8 +224,11 @@ export function renderLayout(opts: LayoutOpts): string {
     <div class="container">
       <p>
         Este proyecto <strong>no está afiliado</strong> a UTE.
-        Código fuente y bibliotecas bajo licencia MIT.
-        Reverse-engineering responsable únicamente — leé <a href="/security">SEGURIDAD</a> antes de operar.
+        Código fuente y bibliotecas bajo licencia MIT —
+        <a href="https://github.com/eduair94/ute-mueve" target="_blank" rel="noopener">GitHub</a> ·
+        <a href="https://www.npmjs.com/package/@ute-mueve/sdk" target="_blank" rel="noopener">@ute-mueve/sdk</a> ·
+        <a href="https://www.npmjs.com/package/@ute-mueve/types" target="_blank" rel="noopener">@ute-mueve/types</a>.
+        Reverse-engineering responsable — leé <a href="/security">SEGURIDAD</a> antes de operar.
       </p>
     </div>
   </footer>

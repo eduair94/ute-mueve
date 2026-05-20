@@ -30,6 +30,12 @@ const ENDPOINTS: EndpointRow[] = [
 
 const QUICK_CARDS = [
   {
+    href: '/map',
+    icon: '🗺️',
+    title: 'Mapa interactivo',
+    desc: 'Vista previa con OpenStreetMap + Leaflet, filtros en vivo y snippet de código en TS/JS/cURL/Python.',
+  },
+  {
     href: '/docs',
     icon: '📚',
     title: 'Referencia de la API',
@@ -311,20 +317,20 @@ export function renderDashboard(): string {
   <section>
     <h2>Más recursos</h2>
     <div class="grid cols-3">
-      <a class="card link" href="https://github.com/eduair94/ute-mueve">
+      <a class="card link" href="https://github.com/eduair94/ute-mueve" target="_blank" rel="noopener">
         <div class="icon">⌥</div>
-        <h3>Repositorio</h3>
-        <p class="desc">Código fuente, plan de implementación y documentos de diseño.</p>
+        <h3>GitHub</h3>
+        <p class="desc">Código fuente, plan de implementación, documentos de diseño y CI/CD.</p>
       </a>
-      <a class="card link" href="https://www.npmjs.com/package/@ute-mueve/sdk">
+      <a class="card link" href="https://www.npmjs.com/package/@ute-mueve/sdk" target="_blank" rel="noopener">
         <div class="icon">📦</div>
         <h3>SDK en npm</h3>
-        <p class="desc">@ute-mueve/sdk · cliente TypeScript isomorfo.</p>
+        <p class="desc">@ute-mueve/sdk · cliente TypeScript isomorfo, ESM + CJS, zero deps.</p>
       </a>
-      <a class="card link" href="/openapi.json">
-        <div class="icon">🧬</div>
-        <h3>OpenAPI JSON</h3>
-        <p class="desc">Esquemas Zod traducidos a OpenAPI 3.1.</p>
+      <a class="card link" href="https://www.npmjs.com/package/@ute-mueve/types" target="_blank" rel="noopener">
+        <div class="icon">🧩</div>
+        <h3>Tipos en npm</h3>
+        <p class="desc">@ute-mueve/types · Zod schemas + interfaces quicktype generadas.</p>
       </a>
     </div>
   </section>
