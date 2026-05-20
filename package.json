@@ -2,6 +2,7 @@
   "name": "ute-mueve",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "packageManager": "pnpm@9.12.0",
   "engines": {
     "node": ">=20.11.0"
@@ -16,10 +17,15 @@
     "test": "pnpm -r test",
     "capture": "pnpm --filter @ute-mueve/tools-capture start",
     "types:generate": "pnpm --filter @ute-mueve/tools-quicktype start",
-    "openapi:export": "pnpm --filter @ute-mueve/bridge openapi:export"
+    "openapi:export": "pnpm --filter @ute-mueve/bridge openapi:export",
+    "deploy:preview": "cd apps/bridge && pnpm dlx vercel@latest",
+    "deploy": "cd apps/bridge && pnpm dlx vercel@latest --prod --yes",
+    "vercel:link": "cd apps/bridge && pnpm dlx vercel@latest link",
+    "vercel:env": "cd apps/bridge && pnpm dlx vercel@latest env add"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "esbuild": "^0.28.0",
     "typescript": "5.6.3"
   }
 }

@@ -4,14 +4,7 @@ import type { Container } from '../container.js';
 import { customerCardExample } from '../examples.js';
 import { UteApiError } from '../upstream/errors.js';
 
-const ParamsSchema = z.object({
-  userId: CustomerKeySchema.openapi({
-    param: { name: 'userId', in: 'path' },
-    description:
-      'Customer key. Accepts both a Uruguayan CI (7-9 digits) and a Firebase Auth UID (20-32 alphanumeric chars). See SECURITY.md F-05.',
-    example: 'EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx',
-  }),
-});
+const ParamsSchema = z.object({ userId: CustomerKeySchema });
 
 export function registerCustomerRoutes(app: OpenAPIHono, c: Container) {
   app.openapi(
@@ -21,7 +14,7 @@ export function registerCustomerRoutes(app: OpenAPIHono, c: Container) {
       tags: ['Customer'],
       summary: 'Customer credit-card metadata',
       description:
-        'Returns the customer\'s MercadoPago-linked credit-card metadata. See SECURITY.md F-05 — UTE backend exposes this for any CI without per-user auth.',
+        "Returns the customer's MercadoPago-linked credit-card metadata. `userId` accepts a Uruguayan CI (6-8 digits, validated) or a Firebase Auth UID (>= 16 alphanumeric chars). See SECURITY.md F-05.",
       request: { params: ParamsSchema },
       responses: {
         200: {

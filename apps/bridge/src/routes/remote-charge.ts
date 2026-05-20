@@ -4,23 +4,10 @@ import type { Container } from '../container.js';
 import { remoteChargeUserExample } from '../examples.js';
 import { UteApiError } from '../upstream/errors.js';
 
-const KeyParamsSchema = z.object({
-  userId: CustomerKeySchema.openapi({
-    param: { name: 'userId', in: 'path' },
-    description: 'Customer key (CI or Firebase UID).',
-    example: 'EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx',
-  }),
-});
+const KeyParamsSchema = z.object({ userId: CustomerKeySchema });
 
 const TxParamsSchema = z.object({
-  transactionId: z
-    .string()
-    .min(1)
-    .max(128)
-    .openapi({
-      param: { name: 'transactionId', in: 'path' },
-      example: 'EXAMPLE_TX',
-    }),
+  transactionId: z.string().min(1).max(128),
 });
 
 function guardWrites(c: Container) {
@@ -40,6 +27,7 @@ export function registerRemoteChargeRoutes(app: OpenAPIHono, c: Container) {
       path: '/remotecharge/user/{userId}',
       tags: ['Remote Charge'],
       summary: 'Remote-charge session history',
+      description: '`userId` accepts a Uruguayan CI (validated) or a Firebase UID.',
       request: { params: KeyParamsSchema },
       responses: {
         200: {

@@ -1,9 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd ../.. && corepack enable && pnpm install --frozen-lockfile --filter @ute-mueve/bridge...",
+  "buildCommand": "echo 'no build step needed; tsx handles TS at runtime'",
+  "outputDirectory": ".",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
   "functions": {
     "api/index.ts": {
-      "includeFiles": "../../{SECURITY.md,docs/security/**/*.md,packages/openapi/fixtures/*.json}"
+      "includeFiles": "../../{SECURITY.md,docs/security/**/*.md,packages/openapi/fixtures/*.json,packages/**/dist/**,packages/**/package.json}"
     }
   }
 }

@@ -28,6 +28,11 @@ out/
 
 # Vercel
 .vercel/
+# Vercel bundle output (regenerated on every deploy)
+/api/index.js
+/api/SECURITY.md
+/api/docs/
+/api/packages/
 
 # Env / secrets
 .env
@@ -48,3 +53,4 @@ coverage/
 
 # pnpm lockfile is committed by convention; leave intact
 apk-decoded/
+.vercel

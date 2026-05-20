@@ -1,18 +1,34 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
 import { renderLayout } from './layout.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(HERE, '../../../..');
+
+/**
+ * Markdown source files may live in one of two places:
+ * - Dev / `tsx`: at the repo root (resolved via `../../../..` from this file).
+ * - Vercel bundled function: alongside the bundle (copied by `scripts/bundle-vercel-fn.mjs`).
+ */
+const SEARCH_ROOTS = [
+  resolve(HERE, '../../../..'), // dev: monorepo root
+  HERE, // bundled: same dir as api/index.js (which is api/)
+  resolve(HERE, '..'), // bundled fallback: parent of api/
+];
 
 function readMd(relative: string): string {
-  try {
-    return readFileSync(resolve(REPO_ROOT, relative), 'utf8');
-  } catch {
-    return `# ${relative}\n\n_(Archivo no incluido en este deployment. Buscá la versión en el repositorio.)_`;
+  for (const root of SEARCH_ROOTS) {
+    const candidate = resolve(root, relative);
+    if (existsSync(candidate)) {
+      try {
+        return readFileSync(candidate, 'utf8');
+      } catch {
+        // continue
+      }
+    }
   }
+  return `# ${relative}\n\n_(Archivo no incluido en este deployment. Buscá la versión en el repositorio.)_`;
 }
 
 marked.setOptions({ gfm: true, breaks: false });
@@ -42,7 +58,11 @@ export function renderMarkdownPage(opts: MarkdownPageOpts): string {
 }
 
 export function renderSecurityIndex(): string {
-  return renderMarkdownPage({ title: 'Reporte de Seguridad', active: 'security', source: 'SECURITY.md' });
+  return renderMarkdownPage({
+    title: 'Reporte de Seguridad',
+    active: 'security',
+    source: 'SECURITY.md',
+  });
 }
 
 export function renderVr001(): string {

@@ -3,13 +3,7 @@ import { CustomerKeySchema, schemas } from '@ute-mueve/types';
 import type { Container } from '../container.js';
 import { networkExample } from '../examples.js';
 
-const ParamsSchema = z.object({
-  userId: CustomerKeySchema.openapi({
-    param: { name: 'userId', in: 'path' },
-    description: 'Customer key (CI or Firebase UID).',
-    example: 'EXAMPLE_USER_ID_xxxxxxxxxxxxxxxxxxxx',
-  }),
-});
+const ParamsSchema = z.object({ userId: CustomerKeySchema });
 
 export function registerNetworkRoutes(app: OpenAPIHono, c: Container) {
   app.openapi(
@@ -18,6 +12,7 @@ export function registerNetworkRoutes(app: OpenAPIHono, c: Container) {
       path: '/network/{userId}',
       tags: ['Networks'],
       summary: 'Networks enabled for the customer',
+      description: '`userId` accepts a Uruguayan CI (validated) or a Firebase UID.',
       request: { params: ParamsSchema },
       responses: {
         200: {
