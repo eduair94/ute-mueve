@@ -156,9 +156,10 @@ const STYLES = /* css */ `
 
   .prose { max-width: 820px; }
   .prose h1, .prose h2, .prose h3 { letter-spacing: -0.01em; }
-  .prose h1 { font-size: 28px; margin: 24px 0 12px; }
-  .prose h2 { font-size: 22px; margin: 32px 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-  .prose h3 { font-size: 17px; margin: 24px 0 8px; }
+  .prose > :first-child { margin-top: 0; }
+  .prose h1 { font-size: 28px; margin: 8px 0 12px; }
+  .prose h2 { font-size: 22px; margin: 28px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .prose h3 { font-size: 17px; margin: 20px 0 8px; }
   .prose p, .prose ul, .prose ol { color: var(--fg); }
   .prose a { color: var(--accent); }
   .prose blockquote {

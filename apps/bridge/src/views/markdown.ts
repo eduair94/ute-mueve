@@ -52,11 +52,9 @@ export function renderMarkdownPage(opts: MarkdownPageOpts): string {
   const md = pickMarkdown(opts.source, opts.lang);
   const html = marked.parse(md) as string;
   const body = `
-    <section style="padding-top: 32px;">
-      <div class="prose">
-        ${html}
-      </div>
-    </section>
+    <article class="prose" style="margin: 16px 0 48px;">
+      ${html}
+    </article>
   `;
   return renderLayout({
     title: `${opts.title} — UTE Mueve Bridge`,
