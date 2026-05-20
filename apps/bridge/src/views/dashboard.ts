@@ -9,7 +9,10 @@ interface EndpointRow {
 
 const ENDPOINTS: EndpointRow[] = [
   { method: 'GET', path: '/configuration/appversion', tags: ['Configuration'], summary: 'Versión mínima soportada de la app' },
-  { method: 'POST', path: '/station/statusFiltered', tags: ['Stations'], summary: 'Estaciones por filtros de conector' },
+  { method: 'POST', path: '/stations/search', tags: ['Stations'], summary: 'Búsqueda ergonómica con enums (CCS2, available, PUBLIC...)' },
+  { method: 'GET', path: '/stations?types=CCS2&statuses=available', tags: ['Stations'], summary: 'Búsqueda via query string (URL compartible)' },
+  { method: 'GET', path: '/stations/available', tags: ['Stations'], summary: 'Atajo: todas las estaciones disponibles ahora' },
+  { method: 'POST', path: '/station/statusFiltered', tags: ['Stations', 'Advanced'], summary: 'Body UTE verbatim (power-user)' },
   { method: 'POST', path: '/station/renewEnergy', tags: ['Stations'], summary: 'Energía renovable en un rango de fechas' },
   { method: 'GET', path: '/customer/card/{userId}', tags: ['Customer'], summary: 'Tarjetas registradas del cliente' },
   { method: 'POST', path: '/customer/card/register', tags: ['Customer', 'Writes'], summary: 'Registrar tarjeta (gated)' },
@@ -29,31 +32,31 @@ const QUICK_CARDS = [
   {
     href: '/docs',
     icon: '📚',
-    title: 'API Reference (Scalar)',
-    desc: 'Explorá los 15 endpoints con ejemplos reales sanitizados, esquemas Zod y "Try it" inline.',
+    title: 'Referencia de la API',
+    desc: 'Explorá los endpoints con ejemplos reales saneados, esquemas Zod y "Probar" inline. Renderizado con Scalar.',
   },
   {
     href: '/openapi.json',
     icon: '🧬',
-    title: 'OpenAPI 3.1',
-    desc: 'Spec JSON generada en tiempo real desde los esquemas Zod. Apto para code-gen.',
+    title: 'Especificación OpenAPI 3.1',
+    desc: 'JSON generado en vivo a partir de los esquemas Zod. Listo para generadores de código.',
   },
   {
     href: '/status',
     icon: '🩺',
-    title: 'Status check',
-    desc: 'Hace un round-trip real a UTE (token + GET configuration). Devuelve OK + latencia + cache backend.',
+    title: 'Verificación de estado',
+    desc: 'Hace un ida-y-vuelta real contra UTE (token + GET configuration). Devuelve OK, latencia y backend de caché.',
   },
   {
     href: '/health',
     icon: '💓',
-    title: 'Health',
-    desc: 'Liveness simple, sin tocar upstream. Usar para health checks de Vercel/load balancer.',
+    title: 'Salud',
+    desc: 'Liveness simple, sin tocar upstream. Útil para health-checks de Vercel o balanceadores.',
   },
   {
     href: '/security',
     icon: '🛡️',
-    title: 'Reporte de seguridad',
+    title: 'Informe de seguridad',
     desc: '12 hallazgos del análisis estático del APK, incluyendo el IDOR crítico F-05.',
     danger: true,
   },
@@ -61,7 +64,7 @@ const QUICK_CARDS = [
     href: '/security/vr-001',
     icon: '🚨',
     title: 'VR-001 — IDOR Crítico',
-    desc: 'Reporte formal de divulgación: con anonymous token + 8 dígitos de CI uruguaya se expone PII + datos de tarjeta de crédito.',
+    desc: 'Reporte formal de divulgación: con token anónimo y 8 dígitos de cédula uruguaya se exponen PII y datos parciales de tarjeta de crédito.',
     danger: true,
   },
 ];
@@ -104,17 +107,28 @@ function renderQuickCards(): string {
 const SDK_EXAMPLE = String.raw`import { UteMueveClient } from '@ute-mueve/sdk';
 
 const client = new UteMueveClient({
-  baseUrl: 'https://tu-bridge.vercel.app',
+  baseUrl: 'https://ute-mueve.vercel.app',
 });
 
-// Estaciones disponibles con conectores CCS2/CHAdeMO en redes públicas
-const stations = await client.stations.filtered({
+// Todas las estaciones disponibles ahora
+const open = await client.stations.available();
+
+// Filtros ergonómicos
+const ccs2 = await client.stations.search({
   connectorTypes: ['CCS2', 'CHAdeMO'],
   statuses: ['available'],
   networks: ['PUBLIC'],
 });
 
-// Métricas de energía renovable de mayo 2026
+// A 5 km de Plaza Independencia (Haversine client-side)
+const nearby = await client.stations.near({
+  lat: -34.9061, lng: -56.1990, radiusMeters: 5000,
+});
+
+// Solo red Taxi
+const taxi = await client.stations.byNetwork('TAXI');
+
+// Energía renovable de mayo 2026
 const renewable = await client.stations.renewableEnergy({
   start: new Date('2026-05-01'),
   end: new Date('2026-05-31'),
@@ -124,18 +138,21 @@ const renewable = await client.stations.renewableEnergy({
 const cards = await client.customer.cards('<CI o UID>');
 const accounts = await client.accounts.byCI('12345672');`;
 
-const CURL_EXAMPLE = String.raw`# Status (round-trip a UTE)
-curl https://tu-bridge.vercel.app/status
+const CURL_EXAMPLE = String.raw`# Round-trip vivo a UTE
+curl https://ute-mueve.vercel.app/status
 
-# Estaciones filtradas
-curl -X POST https://tu-bridge.vercel.app/station/statusFiltered \
+# Búsqueda ergonómica
+curl -X POST https://ute-mueve.vercel.app/stations/search \
   -H 'content-type: application/json' \
-  -d '{"connectorTypes":[{"id":2,"internalCode":"","text":"CCS2","selected":true,"icon":""}],
-       "connectorStatuses":[{"id":1,"internalCode":"","text":"Disponible","selected":true,"icon":""}],
-       "connectorPaymentTypes":[{"id":2,"internalCode":"","text":"App","selected":true,"icon":""}],
-       "connectorPowers":[{"id":1,"internalCode":"","text":"0","selected":true,"icon":""}],
-       "connectorCables":[{"id":2,"internalCode":"","text":"Sin cable","selected":true,"icon":""}],
-       "connectorNetworks":[{"id":1,"internalCode":"PUBLIC","text":"Pública","selected":true,"icon":""}]}'`;
+  -d '{"connectorTypes":["CCS2","CHAdeMO"],"statuses":["available"],"networks":["PUBLIC"]}'
+
+# Búsqueda via GET (URL compartible)
+curl 'https://ute-mueve.vercel.app/stations?types=CCS2,CHAdeMO&statuses=available&networks=PUBLIC'
+
+# Lookup por CI uruguaya
+curl -X POST https://ute-mueve.vercel.app/card/accounts \
+  -H 'content-type: application/json' \
+  -d '{"docType":"CI","docNumber":"12345672","onlyUte":false}'`;
 
 export function renderDashboard(): string {
   const body = `
@@ -157,6 +174,91 @@ export function renderDashboard(): string {
   </section>
 
   <section>
+    <h2>Parámetros de búsqueda de estaciones</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 16px;">
+      Todos los parámetros son opcionales y aceptan arrays. Sin parámetros, la búsqueda devuelve todas las estaciones disponibles. La columna <strong>Valor</strong> muestra los códigos que acepta el SDK y los endpoints <code>/stations/search</code> y <code>GET /stations?...</code>. Las traducciones a las cadenas verbosas de UTE (<em>Disponible</em>, <em>Tarjeta RFID</em>, etc.) las maneja el bridge internamente.
+    </p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>connectorTypes — tipo de conector físico</h3>
+        <p class="desc" style="margin-bottom: 12px;">Norma del enchufe del cargador. El vehículo determina cuál podés usar.</p>
+        <table class="endpoint-table">
+          <tbody>
+            <tr><td><code>"Tipo 2"</code></td><td>AC trifásico europeo (Mennekes). Carga lenta/media en casa o estaciones públicas AC.</td></tr>
+            <tr><td><code>"CCS2"</code></td><td>DC rápido combinado europeo. El estándar dominante para autos modernos en Uruguay.</td></tr>
+            <tr><td><code>"CHAdeMO"</code></td><td>DC rápido japonés (Nissan Leaf, etc.). Compatibilidad limitada.</td></tr>
+            <tr><td><code>"GB/T"</code></td><td>DC rápido chino. Presente sobre todo en flotas asiáticas (BYD, etc.).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>statuses — estado del conector ahora mismo</h3>
+        <p class="desc" style="margin-bottom: 12px;">Estado reportado por la estación. Por defecto la búsqueda usa <code>['available']</code>.</p>
+        <table class="endpoint-table">
+          <tbody>
+            <tr><td><code>"available"</code></td><td>Disponible: libre para iniciar una carga.</td></tr>
+            <tr><td><code>"charging"</code></td><td>Cargando: actualmente en uso.</td></tr>
+            <tr><td><code>"no-comm"</code></td><td>Sin Comunicación: la estación no reporta al servidor.</td></tr>
+            <tr><td><code>"unavailable"</code></td><td>No Disponible: fuera de servicio.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>paymentTypes — métodos de pago aceptados</h3>
+        <p class="desc" style="margin-bottom: 12px;">Cómo se autentica el inicio de carga en la estación.</p>
+        <table class="endpoint-table">
+          <tbody>
+            <tr><td><code>"rfid"</code></td><td>Tarjeta RFID UTE (tarjeta física aproximada al lector).</td></tr>
+            <tr><td><code>"app"</code></td><td>App móvil (UTE Mueve / código QR / carga remota).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>cables — provisión de cable</h3>
+        <p class="desc" style="margin-bottom: 12px;">Indica si la estación trae su propio cable o si hay que llevarlo.</p>
+        <table class="endpoint-table">
+          <tbody>
+            <tr><td><code>"with"</code></td><td>Con cable: la estación lo provee (más rápido enchufar).</td></tr>
+            <tr><td><code>"without"</code></td><td>Sin cable: hay que conectar uno propio (típico Tipo 2 AC).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>networks — operador de la red de carga</h3>
+        <p class="desc" style="margin-bottom: 12px;">Operador o "red" a la que pertenece la estación. La tarifa y la app varían por red.</p>
+        <table class="endpoint-table">
+          <tbody>
+            <tr><td><code>"PUBLIC"</code></td><td>Pública: red propia de UTE, accesible para todos.</td></tr>
+            <tr><td><code>"TAXI"</code></td><td>Taxi: red dedicada a la flota de taxis eléctricos.</td></tr>
+            <tr><td><code>"DMC"</code></td><td>DMC: operador externo (EMSP). Roaming.</td></tr>
+            <tr><td><code>"ONE"</code></td><td>eOne: operador externo (EMSP). Roaming.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>powers — potencia en kW</h3>
+        <p class="desc" style="margin-bottom: 12px;">Filtra por potencia del cargador. Pasá un array de números.</p>
+        <table class="endpoint-table">
+          <tbody>
+            <tr><td><code>[0]</code></td><td>Cualquier potencia (default si no se especifica).</td></tr>
+            <tr><td><code>[60]</code></td><td>Solo cargadores rápidos de 60 kW.</td></tr>
+            <tr><td><code>[22, 50, 60]</code></td><td>Cualquiera entre 22, 50 o 60 kW.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p style="color: var(--fg-muted); font-size: 13px; margin-top: 16px;">
+      <strong>Defaults sin parámetros</strong>: todas las categorías marcadas excepto <code>statuses</code>, que se restringe a <code>['available']</code>. Esto replica el comportamiento "Mostrar disponibles" de la app UTE Mueve.
+    </p>
+  </section>
+
+  <section>
     <h2>Endpoints disponibles <span class="count">${ENDPOINTS.length} rutas</span></h2>
     <div style="overflow-x: auto;">
       <table class="endpoint-table">
@@ -174,12 +276,12 @@ export function renderDashboard(): string {
       </table>
     </div>
     <p style="color: var(--fg-muted); font-size: 13px; margin-top: 12px;">
-      Los endpoints con tag <span class="tag write">Writes</span> requieren <code>ENABLE_WRITE_ENDPOINTS=true</code> en el deployment. Por defecto devuelven <code>503 WRITES_DISABLED</code>.
+      Los endpoints con etiqueta <span class="tag write">Writes</span> requieren <code>ENABLE_WRITE_ENDPOINTS=true</code> en el deployment. Por defecto devuelven <code>503 WRITES_DISABLED</code>.
     </p>
   </section>
 
   <section>
-    <h2>Usar desde TypeScript</h2>
+    <h2>Uso desde TypeScript</h2>
     <div class="grid cols-2">
       <div class="card">
         <h3>SDK <code>@ute-mueve/sdk</code></h3>
@@ -212,12 +314,12 @@ export function renderDashboard(): string {
       <a class="card link" href="https://github.com/eduair94/ute-mueve">
         <div class="icon">⌥</div>
         <h3>Repositorio</h3>
-        <p class="desc">Código fuente, plan de implementación, design docs.</p>
+        <p class="desc">Código fuente, plan de implementación y documentos de diseño.</p>
       </a>
       <a class="card link" href="https://www.npmjs.com/package/@ute-mueve/sdk">
         <div class="icon">📦</div>
         <h3>SDK en npm</h3>
-        <p class="desc">@ute-mueve/sdk · TypeScript isomorfo.</p>
+        <p class="desc">@ute-mueve/sdk · cliente TypeScript isomorfo.</p>
       </a>
       <a class="card link" href="/openapi.json">
         <div class="icon">🧬</div>

@@ -97,10 +97,10 @@ export function createApp(container: Container) {
   app.doc31('/openapi.json', {
     openapi: '3.1.0',
     info: {
-      title: 'UTE Mueve Bridge',
+      title: 'Puente UTE Mueve',
       version: '0.1.0',
       description:
-        'Unofficial bridge to movilidadelectrica.ute.com.uy/api/v2. Handles the anonymous-token lifecycle internally. NOT affiliated with UTE. See SECURITY.md and docs/security/2026-05-20-VR-001-idor-customer-card.md.',
+        'Puente no oficial a movilidadelectrica.ute.com.uy/api/v2. Gestiona el ciclo de vida del JWT anónimo internamente. NO afiliado a UTE. Ver SECURITY.md y docs/security/2026-05-20-VR-001-idor-customer-card.md.',
       contact: { name: '', email: 'admin@checkleaked.cc' },
       license: { name: 'MIT' },
     },
@@ -112,7 +112,7 @@ export function createApp(container: Container) {
     apiReference({
       spec: { url: '/openapi.json' },
       theme: 'purple',
-      pageTitle: 'UTE Mueve Bridge — API Reference',
+      pageTitle: 'Puente UTE Mueve — Referencia de la API',
     }),
   );
 

@@ -11,7 +11,7 @@ export function registerCardRoutes(app: OpenAPIHono, c: Container) {
       method: 'get',
       path: '/card/{userId}',
       tags: ['Cards'],
-      summary: 'List of UTE-issued cards for the customer',
+      summary: 'Lista de tarjetas emitidas por UTE para el cliente',
       description: '`userId` accepts a Uruguayan CI (validated) or a Firebase UID.',
       request: { params: ParamsSchema },
       responses: {

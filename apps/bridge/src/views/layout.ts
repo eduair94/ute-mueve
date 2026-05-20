@@ -179,11 +179,11 @@ function escapeAttr(s: string): string {
 export function renderLayout(opts: LayoutOpts): string {
   const navItems: Array<{ id: NonNullable<LayoutOpts['active']>; href: string; label: string }> = [
     { id: 'home', href: '/', label: 'Inicio' },
-    { id: 'docs', href: '/docs', label: 'API Reference' },
+    { id: 'docs', href: '/docs', label: 'API' },
     { id: 'openapi', href: '/openapi.json', label: 'OpenAPI' },
     { id: 'security', href: '/security', label: 'Seguridad' },
     { id: 'vr', href: '/security/vr-001', label: 'VR-001' },
-    { id: 'health', href: '/status', label: 'Status' },
+    { id: 'health', href: '/status', label: 'Estado' },
   ];
   const nav = navItems
     .map(
@@ -208,7 +208,7 @@ export function renderLayout(opts: LayoutOpts): string {
         <a class="brand" href="/">
           <div class="brand-logo">U</div>
           <div>
-            <h1>UTE Mueve Bridge</h1>
+            <h1>Puente UTE Mueve</h1>
             <div class="sub">Puente no oficial · v0.1.0</div>
           </div>
         </a>

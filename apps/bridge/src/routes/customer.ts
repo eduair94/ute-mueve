@@ -12,7 +12,7 @@ export function registerCustomerRoutes(app: OpenAPIHono, c: Container) {
       method: 'get',
       path: '/customer/card/{userId}',
       tags: ['Customer'],
-      summary: 'Customer credit-card metadata',
+      summary: 'Metadatos de tarjeta de crédito del cliente',
       description:
         "Returns the customer's MercadoPago-linked credit-card metadata. `userId` accepts a Uruguayan CI (6-8 digits, validated) or a Firebase Auth UID (>= 16 alphanumeric chars). See SECURITY.md F-05.",
       request: { params: ParamsSchema },
@@ -40,7 +40,7 @@ export function registerCustomerRoutes(app: OpenAPIHono, c: Container) {
       method: 'post',
       path: '/customer/card/register',
       tags: ['Customer', 'Writes'],
-      summary: 'Register a new payment card (gated)',
+      summary: 'Registrar nueva tarjeta de pago (write, gated)',
       description:
         'Requires `ENABLE_WRITE_ENDPOINTS=true`. Modifies a real UTE Mueve customer account.',
       request: {
@@ -77,7 +77,7 @@ export function registerCustomerRoutes(app: OpenAPIHono, c: Container) {
       method: 'post',
       path: '/customer/card/unregister',
       tags: ['Customer', 'Writes'],
-      summary: 'Unregister a payment card (gated)',
+      summary: 'Desregistrar tarjeta de pago (write, gated)',
       description: 'Requires `ENABLE_WRITE_ENDPOINTS=true`.',
       request: {
         body: {

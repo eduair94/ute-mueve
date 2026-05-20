@@ -9,7 +9,7 @@ export function registerConfigurationRoutes(app: OpenAPIHono, c: Container) {
       method: 'get',
       path: '/configuration/appversion',
       tags: ['Configuration'],
-      summary: 'Minimum supported app version',
+      summary: 'Versión mínima soportada de la app',
       responses: {
         200: {
           description: 'App version metadata (envelope-wrapped)',

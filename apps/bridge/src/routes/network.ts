@@ -11,8 +11,8 @@ export function registerNetworkRoutes(app: OpenAPIHono, c: Container) {
       method: 'get',
       path: '/network/{userId}',
       tags: ['Networks'],
-      summary: 'Networks enabled for the customer',
-      description: '`userId` accepts a Uruguayan CI (validated) or a Firebase UID.',
+      summary: 'Redes de carga habilitadas para el cliente',
+      description: '`userId` acepta una cédula uruguaya (validada con dígito verificador) o un Firebase UID.',
       request: { params: ParamsSchema },
       responses: {
         200: {

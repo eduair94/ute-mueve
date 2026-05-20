@@ -10,7 +10,8 @@ import { NotificationsResource } from './resources/notifications.js';
 
 export { UteSdkError } from './errors.js';
 export type { UteMueveClientOpts, UteMueveHttp } from './client.js';
-export type { StationFilterInput } from './filters.js';
+export type { StationFilterInput, ExpandedStationFilters } from './filters.js';
+export { expandFilters, distance } from './filters.js';
 export type * from '@ute-mueve/types/schemas';
 
 /**
@@ -19,11 +20,21 @@ export type * from '@ute-mueve/types/schemas';
  * ```ts
  * import { UteMueveClient } from '@ute-mueve/sdk';
  *
- * const client = new UteMueveClient({ baseUrl: 'https://your-bridge.vercel.app' });
- * const stations = await client.stations.filtered({ statuses: ['available'] });
- * const renewable = await client.stations.renewableEnergy({
- *   start: new Date('2026-05-01'),
- *   end: new Date('2026-05-31'),
+ * const client = new UteMueveClient({ baseUrl: 'https://ute-mueve.vercel.app' });
+ *
+ * // All available stations
+ * const open = await client.stations.available();
+ *
+ * // Friendly filter
+ * const ccs2 = await client.stations.search({
+ *   connectorTypes: ['CCS2', 'CHAdeMO'],
+ *   statuses: ['available'],
+ *   networks: ['PUBLIC'],
+ * });
+ *
+ * // Within 5 km of Plaza Independencia
+ * const nearby = await client.stations.near({
+ *   lat: -34.9061, lng: -56.1990, radiusMeters: 5000,
  * });
  * ```
  */

@@ -18,10 +18,12 @@
     "capture": "pnpm --filter @ute-mueve/tools-capture start",
     "types:generate": "pnpm --filter @ute-mueve/tools-quicktype start",
     "openapi:export": "pnpm --filter @ute-mueve/bridge openapi:export",
-    "deploy:preview": "cd apps/bridge && pnpm dlx vercel@latest",
-    "deploy": "cd apps/bridge && pnpm dlx vercel@latest --prod --yes",
-    "vercel:link": "cd apps/bridge && pnpm dlx vercel@latest link",
-    "vercel:env": "cd apps/bridge && pnpm dlx vercel@latest env add"
+    "bundle:vercel": "node scripts/bundle-vercel-fn.mjs",
+    "deploy:preview": "pnpm -r build && pnpm dlx vercel@latest",
+    "deploy": "pnpm -r build && pnpm dlx vercel@latest --prod --yes",
+    "vercel:link": "pnpm dlx vercel@latest link",
+    "vercel:env": "pnpm dlx vercel@latest env add",
+    "vercel:logs": "pnpm dlx vercel@latest logs https://ute-mueve.vercel.app --since=10m"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

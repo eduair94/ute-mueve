@@ -18,15 +18,26 @@ npm i @ute-mueve/sdk
 import { UteMueveClient } from '@ute-mueve/sdk';
 
 const client = new UteMueveClient({
-  baseUrl: 'https://your-bridge.vercel.app',
+  baseUrl: 'https://ute-mueve.vercel.app',
 });
 
-// List available stations with CCS2/CHAdeMO/GB-T on public networks
-const stations = await client.stations.filtered({
-  connectorTypes: ['CCS2', 'CHAdeMO', 'GB/T'],
+// Shortest path: all available stations right now
+const open = await client.stations.available();
+
+// Friendly filter
+const ccs2 = await client.stations.search({
+  connectorTypes: ['CCS2', 'CHAdeMO'],
   statuses: ['available'],
   networks: ['PUBLIC'],
 });
+
+// Within 5 km of a point (Haversine, client-side)
+const nearby = await client.stations.near({
+  lat: -34.9061, lng: -56.1990, radiusMeters: 5000,
+});
+
+// Single-network shortcut
+const taxi = await client.stations.byNetwork('TAXI');
 
 // Renewable-energy stats for May 2026
 const renewable = await client.stations.renewableEnergy({
@@ -35,21 +46,37 @@ const renewable = await client.stations.renewableEnergy({
 });
 
 // Customer-scoped — see SECURITY.md F-05 / VR-001 for the IDOR caveat
-const customerKey = '<CI or Firebase UID>';
+const customerKey = '<8-digit CI or Firebase UID>';
 const cards = await client.customer.cards(customerKey);
 const networks = await client.network.get(customerKey);
 const history = await client.remoteCharge.history(customerKey);
 
-// Account lookup by Uruguayan CI
-const accounts = await client.accounts.byCI('10000000');
+// Account lookup by Uruguayan CI (digit-verifier validated)
+const accounts = await client.accounts.byCI('12345672');
+
+// Power user: send UTE's verbose body verbatim
+const advanced = await client.stations.filtered({ /* same StationFilterInput */ });
 ```
+
+### Filter enums
+
+| Field | Values |
+|---|---|
+| `connectorTypes` | `'Tipo 2'`, `'CCS2'`, `'CHAdeMO'`, `'GB/T'` |
+| `statuses` | `'available'`, `'charging'`, `'no-comm'`, `'unavailable'` |
+| `paymentTypes` | `'rfid'`, `'app'` |
+| `cables` | `'with'`, `'without'` |
+| `networks` | `'PUBLIC'`, `'TAXI'`, `'DMC'`, `'ONE'` |
+| `powers` | `number[]` kW (use `[0]` for any) |
+
+All fields optional. Defaults: every connector type + network + payment + cable selected; status defaults to `['available']`; power defaults to `[0]` (any).
 
 ## Resources
 
 | Resource | Methods |
 |---|---|
 | `client.configuration` | `appVersion()` |
-| `client.stations` | `filtered({connectorTypes,statuses,paymentTypes,cables,networks,powers})`, `renewableEnergy({start,end,cardNumbers?})` |
+| `client.stations` | `search(input?)`, `available()`, `byNetwork(network, extra?)`, `near({lat,lng,radiusMeters?}, extra?)`, `filtered(input?)`, `renewableEnergy({start,end,cardNumbers?})` |
 | `client.customer` | `cards(customerKey)`, `registerCard(payload)` *(write)*, `unregisterCard(payload)` *(write)* |
 | `client.card` | `list(customerKey)` |
 | `client.network` | `get(customerKey)` |

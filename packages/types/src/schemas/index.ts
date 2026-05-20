@@ -8,3 +8,4 @@ export * from './network.js';
 export * from './remote-charge.js';
 export * from './account.js';
 export * from './notification.js';
+export * from './stations-search.js';
