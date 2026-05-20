@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "EXAMPLE_STATION",
+    "latitude": -34.9,
+    "longitude": -56.2,
+    "address": "EXAMPLE_ADDRESS, Montevideo",
+    "connectors": [
+      {
+        "id": 1,
+        "type": "CCS2",
+        "status": "Disponible",
+        "power": 60,
+        "network": "PUBLIC",
+        "hasCable": false,
+        "paymentTypes": ["App"]
+      }
+    ]
+  }
+]

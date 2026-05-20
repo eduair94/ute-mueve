@@ -1,0 +1,8 @@
+[
+  {
+    "cardId": "EXAMPLE_CARD_ID",
+    "cardNumber": "EXAMPLE_RFID_xxxxxxxx",
+    "alias": "Mi tarjeta",
+    "cardUseType": "PERSONAL"
+  }
+]

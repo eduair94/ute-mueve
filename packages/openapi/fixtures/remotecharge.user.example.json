@@ -1,0 +1,12 @@
+[
+  {
+    "transactionId": "EXAMPLE_TX",
+    "stationId": 1,
+    "connectorId": 1,
+    "startTime": "2026-05-01T10:00:00Z",
+    "endTime": "2026-05-01T10:30:00Z",
+    "energyKwh": 12.3,
+    "cost": 250.5,
+    "status": "COMPLETED"
+  }
+]

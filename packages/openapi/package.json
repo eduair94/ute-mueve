@@ -1,0 +1,12 @@
+{
+  "name": "@ute-mueve/openapi",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "files": ["openapi.yaml", "fixtures", "README.md"],
+  "scripts": {
+    "typecheck": "echo 'no ts in openapi'",
+    "test": "echo 'no tests in openapi'",
+    "build": "echo 'static assets only'"
+  }
+}

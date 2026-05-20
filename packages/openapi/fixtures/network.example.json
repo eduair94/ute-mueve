@@ -1,0 +1,8 @@
+[
+  {
+    "networkId": "PUBLIC",
+    "networkDesc": "Pública",
+    "internalCode": "PUBLIC",
+    "enabled": true
+  }
+]
