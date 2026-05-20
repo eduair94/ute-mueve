@@ -86,4 +86,62 @@ describe('UteMueveClient', () => {
     await client.accounts.byCI('10000000');
     expect(fetchMock).toHaveBeenCalledOnce();
   });
+
+  describe('direct mode (no baseUrl)', () => {
+    function makeJwt(expSec: number): string {
+      const enc = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url');
+      return `${enc({ alg: 'RS256' })}.${enc({ exp: expSec })}.sig`;
+    }
+
+    it('acquires anonymous token then calls UTE upstream', async () => {
+      const jwt = makeJwt(Math.floor(Date.now() / 1000) + 3600);
+      const calls: { url: string; init: RequestInit }[] = [];
+      const fetchMock = vi.fn(async (url, init) => {
+        calls.push({ url: String(url), init: init as RequestInit });
+        if (String(url).endsWith('/token')) {
+          return new Response(
+            JSON.stringify({ access_token: jwt, expires_in: 3600, token_type: 'Bearer' }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          );
+        }
+        return new Response(
+          JSON.stringify({ data: [], messages: [], success: true, errors: [], result: 0 }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        );
+      });
+      const client = new UteMueveClient({
+        uniqueKey: 'fdd1fb58edc3e',
+        fetch: fetchMock as unknown as typeof fetch,
+      });
+      await client.stations.available();
+      expect(calls.length).toBe(2);
+      expect(calls[0]?.url).toContain('movilidadelectrica.ute.com.uy/api/v2/token');
+      expect(calls[1]?.url).toContain('movilidadelectrica.ute.com.uy/api/v2/station/statusFiltered');
+      const headers = new Headers(calls[1]?.init.headers);
+      expect(headers.get('authorization')).toBe(`Bearer ${jwt}`);
+      expect(headers.get('uniquekeyuser')).toBe('fdd1fb58edc3e');
+    });
+
+    it('reuses cached token across calls', async () => {
+      const jwt = makeJwt(Math.floor(Date.now() / 1000) + 3600);
+      let tokenCalls = 0;
+      const fetchMock = vi.fn(async (url) => {
+        if (String(url).endsWith('/token')) {
+          tokenCalls += 1;
+          return new Response(
+            JSON.stringify({ access_token: jwt, expires_in: 3600, token_type: 'Bearer' }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          );
+        }
+        return new Response(
+          JSON.stringify({ data: [], messages: [], success: true, errors: [], result: 0 }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        );
+      });
+      const client = new UteMueveClient({ fetch: fetchMock as unknown as typeof fetch });
+      await client.stations.available();
+      await client.stations.available();
+      expect(tokenCalls).toBe(1);
+    });
+  });
 });

@@ -12,14 +12,25 @@ pnpm add @ute-mueve/sdk
 npm i @ute-mueve/sdk
 ```
 
+## Modes
+
+| Mode | When to use | Setup |
+|---|---|---|
+| **Direct** (default) | Node.js scripts, server-side code | `new UteMueveClient()` — SDK handles token + `uniquekeyuser` |
+| **Bridge** | Browser (CORS) or hosted gateway with API-key/rate-limit | `new UteMueveClient({ baseUrl: 'https://your-bridge.vercel.app' })` |
+
 ## Quickstart
 
 ```ts
 import { UteMueveClient } from '@ute-mueve/sdk';
 
-const client = new UteMueveClient({
-  baseUrl: 'https://ute-mueve.vercel.app',
-});
+// Direct mode — SDK calls movilidadelectrica.ute.com.uy/api/v2 itself,
+// acquires the anonymous JWT on first request, caches it in memory,
+// refreshes on expiry/401.
+const client = new UteMueveClient();
+
+// Browser? Use the public bridge to bypass CORS:
+//   const client = new UteMueveClient({ baseUrl: 'https://ute-mueve.vercel.app' });
 
 // Shortest path: all available stations right now
 const open = await client.stations.available();

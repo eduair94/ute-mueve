@@ -123,8 +123,8 @@ const SCRIPT = /* js */ `
     document.getElementById('snippet-code').textContent = code;
   }
   const SNIPPETS = {
-    ts: (f) => "import { UteMueveClient } from '@ute-mueve/sdk';\\n\\nconst client = new UteMueveClient({ baseUrl: 'https://ute-mueve.vercel.app' });\\nconst result = await client.stations.search(" + JSON.stringify(f, null, 2) + ");\\nconsole.log(result.data);",
-    js: (f) => "import { UteMueveClient } from '@ute-mueve/sdk';\\n\\nconst client = new UteMueveClient({ baseUrl: 'https://ute-mueve.vercel.app' });\\nconst result = await client.stations.search(" + JSON.stringify(f, null, 2) + ");\\nconsole.log(result.data);",
+    ts: (f) => "import { UteMueveClient } from '@ute-mueve/sdk';\\n\\n// Modo directo (Node) — sin baseUrl. SDK maneja token + uniquekeyuser.\\nconst client = new UteMueveClient();\\nconst result = await client.stations.search(" + JSON.stringify(f, null, 2) + ");\\nconsole.log(result.data);",
+    js: (f) => "import { UteMueveClient } from '@ute-mueve/sdk';\\n\\n// Modo directo (Node) — sin baseUrl. SDK maneja token + uniquekeyuser.\\nconst client = new UteMueveClient();\\nconst result = await client.stations.search(" + JSON.stringify(f, null, 2) + ");\\nconsole.log(result.data);",
     fetch: (f) => "const res = await fetch('https://ute-mueve.vercel.app/stations/search', {\\n  method: 'POST',\\n  headers: { 'content-type': 'application/json' },\\n  body: JSON.stringify(" + JSON.stringify(f, null, 2) + ")\\n});\\nconst { data } = await res.json();\\nconsole.log(data);",
     curl: (f) => "curl -X POST https://ute-mueve.vercel.app/stations/search \\\\\\n  -H 'content-type: application/json' \\\\\\n  -d '" + JSON.stringify(f) + "'",
     get: (f) => {

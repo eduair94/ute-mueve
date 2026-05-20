@@ -48,7 +48,7 @@ export class UteMueveClient {
   readonly accounts: AccountsResource;
   readonly notifications: NotificationsResource;
 
-  constructor(opts: UteMueveClientOpts) {
+  constructor(opts: UteMueveClientOpts = {}) {
     const http = new UteMueveHttp(opts);
     this.configuration = new ConfigurationResource(http);
     this.stations = new StationsResource(http);

@@ -24,7 +24,12 @@ export class StationsResource {
    * ```
    */
   search(input: schemas.StationsSearchRequest = {}): Promise<schemas.StatusFilteredResponse> {
-    return this.http.post<schemas.StatusFilteredResponse>('/stations/search', input);
+    // Always expand locally and call UTE-native `/station/statusFiltered` so the
+    // request works against UTE directly or via the bridge (which proxies 1:1).
+    return this.http.post<schemas.StatusFilteredResponse>(
+      '/station/statusFiltered',
+      expandStationsFilters(input),
+    );
   }
 
   /** Shortcut: all stations that report `Disponible` right now. */

@@ -112,9 +112,12 @@ function renderQuickCards(): string {
 
 const SDK_EXAMPLE = String.raw`import { UteMueveClient } from '@ute-mueve/sdk';
 
-const client = new UteMueveClient({
-  baseUrl: 'https://ute-mueve.vercel.app',
-});
+// Modo directo (Node.js) — el SDK habla con UTE directamente,
+// maneja el JWT anónimo y el uniquekeyuser por vos:
+const client = new UteMueveClient();
+
+// Browser? Usá el bridge para evitar CORS:
+//   const client = new UteMueveClient({ baseUrl: 'https://ute-mueve.vercel.app' });
 
 // Todas las estaciones disponibles ahora
 const open = await client.stations.available();

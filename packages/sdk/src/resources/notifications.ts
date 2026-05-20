@@ -7,9 +7,7 @@ export class NotificationsResource {
   register(
     payload: schemas.NotificationRegisterRequest,
   ): Promise<schemas.NotificationRegisterResponse> {
-    return this.http.post<schemas.NotificationRegisterResponse>(
-      '/notification/register',
-      payload,
-    );
+    const path = this.http.isDirect() ? '/notification/register/' : '/notification/register';
+    return this.http.post<schemas.NotificationRegisterResponse>(path, payload);
   }
 }

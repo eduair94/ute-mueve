@@ -11,7 +11,7 @@ export class AccountsResource {
    * documented in VR-001; treat the result as PII.
    */
   byCI(ci: string, opts: { onlyUte?: boolean } = {}): Promise<schemas.AccountsLookupResponse> {
-    return this.http.post<schemas.AccountsLookupResponse>('/card/accounts', {
+    return this.http.post<schemas.AccountsLookupResponse>(this.path(), {
       docType: 'CI',
       docNumber: ci,
       onlyUte: opts.onlyUte ?? false,
@@ -19,6 +19,11 @@ export class AccountsResource {
   }
 
   lookup(payload: schemas.AccountsLookupRequest): Promise<schemas.AccountsLookupResponse> {
-    return this.http.post<schemas.AccountsLookupResponse>('/card/accounts', payload);
+    return this.http.post<schemas.AccountsLookupResponse>(this.path(), payload);
+  }
+
+  /** UTE upstream uses a trailing slash; the bridge accepts either form. */
+  private path(): string {
+    return this.http.isDirect() ? '/card/accounts/' : '/card/accounts';
   }
 }
