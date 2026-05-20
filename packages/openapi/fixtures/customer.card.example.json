@@ -1,8 +1,29 @@
-[
-  {
-    "cardId": "EXAMPLE_CARD_ID",
-    "cardNumber": "EXAMPLE_RFID_xxxxxxxx",
-    "alias": "Mi tarjeta",
-    "cardUseType": "PERSONAL"
-  }
-]
+{
+  "data": [
+    {
+      "id": "REDACTED_INTERNAL_ID",
+      "cardId": "**XXXXXXXXXXXXX",
+      "firstSixDigits": "REDACTED_BIN",
+      "lastFourDigits": "REDACTED_L4",
+      "expirationMonth": "REDACTED",
+      "expirationYear": "REDACTED",
+      "identifType": "CI",
+      "identifNumber": "REDACTED_CI",
+      "paymentMethodId": "REDACTED_BRAND",
+      "firstName": "REDACTED_NAME",
+      "lastName": "REDACTED_NAME",
+      "status": "Habilitada",
+      "statusDate": "REDACTED_ISO_DATETIME",
+      "cvvMandatory": true,
+      "payerCardId": "REDACTED_MP_ID",
+      "issuerId": "REDACTED",
+      "minPay": 15,
+      "cardUseType": 1,
+      "cardUseTypeDesc": "Particular"
+    }
+  ],
+  "messages": [],
+  "success": true,
+  "errors": [],
+  "result": 0
+}

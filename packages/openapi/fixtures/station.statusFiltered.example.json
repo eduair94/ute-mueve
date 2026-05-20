@@ -1,20 +1,73 @@
-[
-  {
-    "id": 1,
-    "name": "EXAMPLE_STATION",
-    "latitude": -34.9,
-    "longitude": -56.2,
-    "address": "EXAMPLE_ADDRESS, Montevideo",
-    "connectors": [
-      {
-        "id": 1,
-        "type": "CCS2",
-        "status": "Disponible",
-        "power": 60,
-        "network": "PUBLIC",
-        "hasCable": false,
-        "paymentTypes": ["App"]
-      }
-    ]
-  }
-]
+{
+  "data": [
+    {
+      "id": 3,
+      "name": "Palacio de la Luz - Aguilar",
+      "source": "CargaME",
+      "status": 0,
+      "statusDetails": "Available",
+      "lat": -34.885144,
+      "lng": -56.195179,
+      "chargeNetworkName": "PUBLIC",
+      "countryCode": "UY",
+      "operatorLogoUrl": null,
+      "cardUseTypeDiscount": null
+    },
+    {
+      "id": 7,
+      "name": "ANCAP Colonia del Sacramento",
+      "source": "CargaME",
+      "status": 0,
+      "statusDetails": "Available",
+      "lat": -34.471664,
+      "lng": -57.841764,
+      "chargeNetworkName": "PUBLIC",
+      "countryCode": "UY",
+      "operatorLogoUrl": null,
+      "cardUseTypeDiscount": null
+    },
+    {
+      "id": 8,
+      "name": "Estación Península",
+      "source": "CargaME",
+      "status": 0,
+      "statusDetails": "Available",
+      "lat": -34.967524,
+      "lng": -54.951832,
+      "chargeNetworkName": "PUBLIC",
+      "countryCode": "UY",
+      "operatorLogoUrl": null,
+      "cardUseTypeDiscount": null
+    },
+    {
+      "id": 11,
+      "name": "ANCAP Chuy",
+      "source": "CargaME",
+      "status": 0,
+      "statusDetails": "Available",
+      "lat": -33.694694,
+      "lng": -53.455267,
+      "chargeNetworkName": "PUBLIC",
+      "countryCode": "UY",
+      "operatorLogoUrl": null,
+      "cardUseTypeDiscount": null
+    },
+    {
+      "id": 15,
+      "name": "Electrolinera Leguizamón",
+      "source": "CargaME",
+      "status": 0,
+      "statusDetails": "Available",
+      "lat": -34.896317,
+      "lng": -56.140618,
+      "chargeNetworkName": "PUBLIC",
+      "countryCode": "UY",
+      "operatorLogoUrl": null,
+      "cardUseTypeDiscount": null
+    }
+  ],
+  "messages": [],
+  "success": true,
+  "errors": [],
+  "result": 0
+}

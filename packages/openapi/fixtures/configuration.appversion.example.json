@@ -1,4 +1,12 @@
 {
-  "customersAppMinVersionSupportedAndroid": "1.0.0",
-  "customersAppMinVersionSupportediOS": "1.0.0"
+  "data": {
+    "customersAppMinVersionSupportedAndroid": "1.0.0",
+    "customersAppMinVersionSupportediOS": "1.0.0",
+    "emailServerBlackList": [],
+    "environment": "Production"
+  },
+  "messages": [],
+  "success": true,
+  "errors": [],
+  "result": 0
 }

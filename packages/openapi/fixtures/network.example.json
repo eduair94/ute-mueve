@@ -1,8 +1,32 @@
-[
-  {
-    "networkId": "PUBLIC",
-    "networkDesc": "Pública",
-    "internalCode": "PUBLIC",
-    "enabled": true
-  }
-]
+{
+  "data": [
+    {
+      "id": 0,
+      "networkDesc": "Pública",
+      "networkId": "PUBLIC",
+      "source": "CargaME"
+    },
+    {
+      "id": 0,
+      "networkDesc": "Taxi",
+      "networkId": "TAXI",
+      "source": "CargaME"
+    },
+    {
+      "id": 1,
+      "networkDesc": "DMC",
+      "networkId": "DMC",
+      "source": "EMSP"
+    },
+    {
+      "id": 2,
+      "networkDesc": "eOne",
+      "networkId": "ONE",
+      "source": "EMSP"
+    }
+  ],
+  "messages": [],
+  "success": true,
+  "errors": [],
+  "result": 0
+}

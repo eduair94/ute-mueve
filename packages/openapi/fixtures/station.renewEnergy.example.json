@@ -1,4 +1,7 @@
 {
-  "totalEnergy": 12345.6,
-  "renewablePercentage": 98.7
+  "data": null,
+  "messages": [],
+  "success": true,
+  "errors": [],
+  "result": 0
 }

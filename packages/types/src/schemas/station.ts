@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { uteEnvelope } from './envelope.js';
 import { IsoDateStringSchema, UteFilterOptionSchema } from '../common.js';
 
 export const StatusFilteredRequestSchema = z.object({
@@ -24,11 +25,27 @@ export const ConnectorSchema = z
   .passthrough();
 export type Connector = z.infer<typeof ConnectorSchema>;
 
+/**
+ * Station shape observed via live capture against `POST /station/statusFiltered`.
+ * Numeric `status` values seen so far: `0` → Available. `statusDetails` is the
+ * human-readable counterpart.
+ */
 export const StationSchema = z
   .object({
     id: z.union([z.number(), z.string()]),
     name: z.string().optional(),
+    source: z.string().optional(),
+    status: z.union([z.number(), z.string()]).optional(),
+    statusDetails: z.string().optional(),
+    lat: z.number().optional(),
+    lng: z.number().optional(),
+    chargeNetworkName: z.string().optional(),
+    countryCode: z.string().optional(),
+    operatorLogoUrl: z.string().nullable().optional(),
+    cardUseTypeDiscount: z.unknown().nullable().optional(),
+    /** @deprecated use lat */
     latitude: z.number().optional(),
+    /** @deprecated use lng */
     longitude: z.number().optional(),
     address: z.string().optional(),
     connectors: z.array(ConnectorSchema).optional(),
@@ -36,7 +53,7 @@ export const StationSchema = z
   .passthrough();
 export type Station = z.infer<typeof StationSchema>;
 
-export const StatusFilteredResponseSchema = z.array(StationSchema);
+export const StatusFilteredResponseSchema = uteEnvelope(z.array(StationSchema));
 export type StatusFilteredResponse = z.infer<typeof StatusFilteredResponseSchema>;
 
 export const RenewEnergyRequestSchema = z.object({
@@ -46,10 +63,13 @@ export const RenewEnergyRequestSchema = z.object({
 });
 export type RenewEnergyRequest = z.infer<typeof RenewEnergyRequestSchema>;
 
-export const RenewEnergyResponseSchema = z
+export const RenewEnergyDataSchema = z
   .object({
     totalEnergy: z.number().optional(),
     renewablePercentage: z.number().optional(),
   })
   .passthrough();
+export type RenewEnergyData = z.infer<typeof RenewEnergyDataSchema>;
+
+export const RenewEnergyResponseSchema = uteEnvelope(RenewEnergyDataSchema);
 export type RenewEnergyResponse = z.infer<typeof RenewEnergyResponseSchema>;

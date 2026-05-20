@@ -2,6 +2,13 @@
 *.apk
 apk-extracted/
 **/apk-extracted/
+apk-decoded/
+
+# Raw HTTP capture markdowns (contain JWTs, PII, CI) — do NOT commit
+*consultas*.md
+UteMueveConsultas.md
+account-consultas.md
+*-evidence-raw.json
 
 # Node / pnpm
 node_modules/

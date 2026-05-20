@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { uteEnvelope } from './envelope.js';
 
 export const RemoteChargeSessionSchema = z
   .object({
@@ -14,7 +15,7 @@ export const RemoteChargeSessionSchema = z
   .passthrough();
 export type RemoteChargeSession = z.infer<typeof RemoteChargeSessionSchema>;
 
-export const RemoteChargeHistoryResponseSchema = z.array(RemoteChargeSessionSchema);
+export const RemoteChargeHistoryResponseSchema = uteEnvelope(z.array(RemoteChargeSessionSchema));
 export type RemoteChargeHistoryResponse = z.infer<typeof RemoteChargeHistoryResponseSchema>;
 
 export const StartRemoteChargeRequestSchema = z
@@ -35,13 +36,13 @@ export const StopRemoteChargeRequestSchema = z
   .passthrough();
 export type StopRemoteChargeRequest = z.infer<typeof StopRemoteChargeRequestSchema>;
 
-export const RemoteChargeActionResponseSchema = z
-  .object({
-    success: z.boolean().optional(),
-    message: z.string().optional(),
-    transactionId: z.string().optional(),
-  })
-  .passthrough();
+export const RemoteChargeActionResponseSchema = uteEnvelope(
+  z
+    .object({
+      transactionId: z.string().optional(),
+    })
+    .passthrough(),
+);
 export type RemoteChargeActionResponse = z.infer<typeof RemoteChargeActionResponseSchema>;
 
 export const ConnectorStatusRequestSchema = z
@@ -52,11 +53,13 @@ export const ConnectorStatusRequestSchema = z
   .passthrough();
 export type ConnectorStatusRequest = z.infer<typeof ConnectorStatusRequestSchema>;
 
-export const ConnectorStatusResponseSchema = z
-  .object({
-    status: z.string().optional(),
-    energyKwh: z.number().optional(),
-    durationSeconds: z.number().optional(),
-  })
-  .passthrough();
+export const ConnectorStatusResponseSchema = uteEnvelope(
+  z
+    .object({
+      status: z.string().optional(),
+      energyKwh: z.number().optional(),
+      durationSeconds: z.number().optional(),
+    })
+    .passthrough(),
+);
 export type ConnectorStatusResponse = z.infer<typeof ConnectorStatusResponseSchema>;

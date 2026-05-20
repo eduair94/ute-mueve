@@ -20,7 +20,7 @@
 | F-02 | Embedded Firebase project credentials (API key, app ID, DB URL) | Low — *expected*, depends on DB/Auth rules |
 | F-03 | OAuth web client ID exposed in app resources | Info — standard for Google Sign-In |
 | F-04 | No certificate pinning for `movilidadelectrica.ute.com.uy` | Medium |
-| F-05 | Anonymous-only API authentication (`clientIdIDP=cargaME`) | Medium |
+| F-05 | **IDOR via bare Uruguayan CI exposes PII + credit-card metadata** | **Critical** (see [VR-001](docs/security/2026-05-20-VR-001-idor-customer-card.md)) |
 | F-06 | `uniquekeyuser` header is device-derived, not tied to user/account | Low |
 | F-07 | No app attestation (Play Integrity / SafetyNet) | Medium |
 | F-08 | JWT and other API endpoints recoverable from Dart AOT strings | Info |
@@ -89,21 +89,20 @@
 
 ---
 
-### F-05 — Anonymous-Only API Authentication  **(Medium)**
+### F-05 — IDOR via Bare Uruguayan CI Exposes PII + Credit-Card Metadata  **(Critical)**
 
-**Evidence** — `lib/arm64-v8a/libapp.so` strings:
-```
-clientIdIDP
-cargaME
-identifier
-Anonymous
-/api/v2/token
-```
-Token capture (in `UteMueveConsultas.md`) decodes to: `aud=apiME`, `client_id=cargaME`, `scope=[apiME]`, no subject (`sub`) claim. All authenticated endpoints validate **only** that a valid `apiME`-audience JWT is present; user-specific endpoints (e.g., `/customer/card/{userId}`) accept the `userId` as a **path parameter** with no cryptographic binding between the token and the requested userId.
+Full detail in [`docs/security/2026-05-20-VR-001-idor-customer-card.md`](docs/security/2026-05-20-VR-001-idor-customer-card.md). Summary:
 
-**Impact** — If an attacker discovers or enumerates a valid `userId` (24-char URL-safe base64-style string), they can read that user's registered RFID cards, network preferences, and remote-charge history from any device with a valid anonymous token. Enumeration risk depends on UTE's `userId` entropy and rate-limiting.
+The `/api/v2` JWT is anonymous (`aud=apiME`, `client_id=cargaME`, no `sub` claim). User-scoped endpoints (`GET /customer/card/{key}`, `GET /card/{key}`, `GET /network/{key}`, `GET /remotecharge/user/{key}`, `POST /card/accounts/`) accept a bare 7–9 digit Uruguayan cédula (CI) as the path or body parameter, with no cryptographic binding between the token and the requested customer.
 
-**Mitigation (server-side)** — Bind tokens to user identity via OAuth user flow (already partially scaffolded — `identityserver.ute.com.uy/connect/authorize` and the `ute://openid` deep link in the manifest). Validate that path `userId` matches the token's subject claim.
+Verified live on 2026-05-20: a fresh, never-seen-before `uniquekeyuser` was generated, an anonymous token was acquired, and a single test `GET /customer/card/<CI>` returned: first and last name on file, credit-card BIN (first 6 PAN digits), last 4 PAN digits, expiration month/year, brand, MercadoPago `payerCardId`, internal accountId, registered networks, and remote-charge history.
+
+**Severity (CVSS 3.1 9.1, Critical):** national-scale IDOR exposing PII and partial credit-card data of UTE Mueve users by CI lookup, with no observed rate-limiting on token issuance or on user-scoped GETs. Likely breach of Uruguayan Ley 18.331 (Personal Data Protection).
+
+**Mitigation (urgent, server-side):**
+1. Rate-limit `POST /api/v2/token` per IP and per `uniquekeyuser` (e.g., 60/h, 10/min).
+2. Require authenticated user tokens (Firebase ID token or OAuth via `identityserver.ute.com.uy/connect/*`) on every user-scoped endpoint; validate path `customerKey` matches the token's subject.
+3. Remove BIN, last 4, expiration, name fields from `GET /customer/card/{key}` until per-user auth is enforced.
 
 ---
 
