@@ -31,6 +31,7 @@ out/
 # Vercel bundle output (regenerated on every deploy)
 /api/index.js
 /api/SECURITY.md
+/api/SECURITY.es.md
 /api/docs/
 /api/packages/
 
