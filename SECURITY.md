@@ -1,6 +1,6 @@
 # SECURITY — UTE Mueve APK Static Analysis Report
 
-> **Disclaimer.** This document is the result of a **static analysis only** of the publicly distributed Android application `UTE Mueve.apk` (versionName `1.0.24`, versionCode `9922`, package `movilidad.ute.com.ute_movilidad_app`). **No active probing, exploitation, or live testing against UTE's backend was performed.** The purpose is interoperability research and responsible documentation for users of this repository's bridge API. If you are the maintainer of UTE Mueve and want this report adjusted, removed, or coordinated, contact the repository owner.
+> **Disclaimer.** This document is primarily the result of a **static analysis** of the publicly distributed Android application `UTE Mueve.apk` (versionName `1.0.24`, versionCode `9922`, package `movilidad.ute.com.ute_movilidad_app`). Two narrow exceptions to the static-only posture: (1) the shape of finding F-05 was characterised against UTE's backend with the consent of the cédula holder; (2) on 2026-05-21 a single trivial request was issued against each paid Google Maps Platform endpoint using the embedded Maps API key to determine which APIs are enabled on UTE's GCP project — see F-01 for results. **No further active probing or exploitation against UTE's backend was performed.** The purpose is interoperability research and responsible documentation for users of this repository's bridge API. If you are the maintainer of UTE Mueve and want this report adjusted, removed, or coordinated, contact the repository owner.
 >
 > **Coordinated disclosure.** Issues marked Medium or higher should be reported to UTE before any public exploitation example is published. This document does **not** include exploitation steps.
 
@@ -16,7 +16,7 @@
 
 | ID | Title | Severity |
 |----|-------|----------|
-| F-01 | Embedded Google Maps API key | Medium (depends on console restrictions) |
+| F-01 | Embedded Google Maps API key | Low (paid REST surface confirmed disabled by active probe 2026-05-21; JS-API referrer restriction unverified) |
 | F-02 | Embedded Firebase project credentials (API key, app ID, DB URL) | Low — *expected*, depends on DB/Auth rules |
 | F-03 | OAuth web client ID exposed in app resources | Info — standard for Google Sign-In |
 | F-04 | No certificate pinning for `movilidadelectrica.ute.com.uy` | Medium |
@@ -33,7 +33,7 @@
 
 ## Findings
 
-### F-01 — Embedded Google Maps API Key  **(Medium)**
+### F-01 — Embedded Google Maps API Key  **(Low — paid REST surface confirmed disabled)**
 
 **Evidence** — `apk-decoded/AndroidManifest.xml:30`:
 ```xml
@@ -41,9 +41,26 @@
            android:value="AIzaSyAMFpy9xfBHPsFoDO9E5H14sVEE3ZcWM-s"/>
 ```
 
-**Impact** — If this key is not restricted to package `movilidad.ute.com.ute_movilidad_app` + the release signing certificate SHA-1 in the Google Cloud Console, an attacker can use it from arbitrary apps/scripts and burn UTE's Maps quota / generate cost.
+**Active probe (2026-05-21).** Single trivial request issued against every paid Google Maps Platform endpoint using the embedded key. GCP project: `369214268353`. Results:
 
-**Mitigation** — In GCP Console: API & Services → Credentials → restrict key to "Android apps" with the production SHA-1 and the package name. Additionally restrict to only the specific Maps SDKs used.
+| Endpoint family | Result |
+|---|---|
+| Geocoding (forward + reverse), Elevation, TimeZone, Street View Static | `REQUEST_DENIED — This API is not activated on your API project` |
+| Directions, Distance Matrix, Places (legacy: findplace, nearby, textsearch, autocomplete, details) | `REQUEST_DENIED — legacy API not enabled` |
+| Roads (nearest, snap), Routes API v2, Places API New v1, Address Validation, Air Quality, Pollen, Solar, Aerial View, Map Tiles | `403 PERMISSION_DENIED — API has not been used in project 369214268353 before or it is disabled` |
+| Static Maps | `403 — must enable Billing` (typical response when Android-app restriction filters non-mobile callers; legit Maps SDK in the APK works, so billing is in fact enabled on the project) |
+| Maps JavaScript API (`/maps/api/js?key=…`) | `200` from any `Referer`, including `https://attacker.example/` |
+
+**Impact** — Original worst-case (attacker drains Geocoding/Directions/Places quota for thousands of dollars) does **not** apply: those APIs are not enabled on the project, so any request from an attacker is rejected at zero charge to UTE.
+
+Remaining surface:
+- **Maps SDK for Android** — appears restricted by package + signing-cert SHA-1 (calls from `curl` with spoofed `X-Android-Package` + fake `X-Android-Cert` rejected). Not abusable without UTE's release signing cert.
+- **Maps JavaScript API** — bootstrap JS is fetched successfully with arbitrary `Referer`. Bootstrap fetch itself is free; actual map loads bill ~$7/1k. Whether tile rendering enforces an HTTP-referrer restriction was **not** confirmed (each verification call would itself bill UTE). If no referrer restriction is set in the key, an attacker can embed UTE's Maps JS API on their own site and charge UTE per map load.
+
+**Mitigation** — In GCP Console for project `369214268353`, API & Services → Credentials → key restrictions:
+1. Confirm the Android-apps restriction (production package + SHA-1) is enabled — current evidence is consistent with it being set.
+2. **Add an HTTP referrers restriction** to the Maps JavaScript API entitlement (or remove the entitlement entirely if the app does not actually use Maps JS — only the Android SDK was observed in the APK).
+3. Leave all other Maps Platform APIs disabled on the project — the current configuration is the safest possible posture.
 
 ---
 
