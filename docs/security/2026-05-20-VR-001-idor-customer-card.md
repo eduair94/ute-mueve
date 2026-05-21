@@ -1,7 +1,7 @@
 # Vulnerability Report VR-001 — IDOR exposing PII and credit-card metadata via Uruguayan CI
 
 > **Status:** Draft, not yet disclosed to UTE.
-> **Reporter:**  `<admin@checkleaked.cc>`
+> **Reporter:** `<admin@checkleaked.cc>`
 > **Date discovered:** 2026-05-20
 > **Severity (CVSS 3.1):** **9.1 / Critical**  — `AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N`
 > **Product:** UTE Mueve (electric-mobility platform of Administración Nacional de Usinas y Trasmisiones Eléctricas, Uruguay).

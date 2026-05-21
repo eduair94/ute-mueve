@@ -104,7 +104,7 @@ export function createApp(container: Container) {
       version: '0.1.0',
       description:
         'Puente no oficial a movilidadelectrica.ute.com.uy/api/v2. Gestiona el ciclo de vida del JWT anónimo internamente. NO afiliado a UTE. Ver SECURITY.md y docs/security/2026-05-20-VR-001-idor-customer-card.md.',
-      contact: { name: '', email: 'admin@checkleaked.cc' },
+      contact: { email: 'admin@checkleaked.cc' },
       license: { name: 'MIT' },
     },
     servers: [{ url: '/' }],

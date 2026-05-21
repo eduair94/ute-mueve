@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Zod schemas + quicktype-generated interfaces for the UTE Mueve API (unofficial).",
   "license": "MIT",
-  "author": " <admin@checkleaked.cc>",
+  "author": "admin@checkleaked.cc",
   "homepage": "https://ute-mueve.vercel.app",
   "repository": {
     "type": "git",

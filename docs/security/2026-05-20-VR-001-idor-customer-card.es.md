@@ -1,7 +1,7 @@
 # Reporte de Vulnerabilidad VR-001 — IDOR que expone PII y metadatos de tarjeta de crédito vía cédula uruguaya
 
 > **Estado:** Borrador, todavía no divulgado a UTE.
-> **Reportador:**  `<admin@checkleaked.cc>`
+> **Reportador:** `<admin@checkleaked.cc>`
 > **Fecha de descubrimiento:** 2026-05-20
 > **Severidad (CVSS 3.1):** **9.1 / Crítica**  — `AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N`
 > **Producto:** UTE Mueve (plataforma de movilidad eléctrica de Administración Nacional de Usinas y Trasmisiones Eléctricas, Uruguay).

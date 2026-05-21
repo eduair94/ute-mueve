@@ -1,7 +1,7 @@
 # UTE Mueve Bridge API + SDK — Design
 
 **Date**: 2026-05-20
-**Author**:  + Claude (Opus 4.7)
+**Author**: Claude (Opus 4.7)
 **Status**: Draft for approval
 
 ## 1. Goal

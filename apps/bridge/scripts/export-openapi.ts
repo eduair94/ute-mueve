@@ -20,7 +20,7 @@ const doc = app.getOpenAPI31Document({
     version: '0.1.0',
     description:
       'Unofficial bridge to movilidadelectrica.ute.com.uy/api/v2. See SECURITY.md and docs/security/2026-05-20-VR-001-idor-customer-card.md.',
-    contact: { name: '', email: 'admin@checkleaked.cc' },
+    contact: { email: 'admin@checkleaked.cc' },
     license: { name: 'MIT' },
   },
   servers: [{ url: '/' }],

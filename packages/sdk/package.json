@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Isomorphic TypeScript SDK for the UTE Mueve bridge API (unofficial).",
   "license": "MIT",
-  "author": " <admin@checkleaked.cc>",
+  "author": "admin@checkleaked.cc",
   "homepage": "https://ute-mueve.vercel.app",
   "repository": {
     "type": "git",
